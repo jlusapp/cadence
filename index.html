@@ -1062,7 +1062,7 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('#sheet').hidden
   else if(R&&$('#sheet').hidden&&e.key===' '&&e.target.tagName!=='INPUT'){e.preventDefault();if(R.phase==='work')validSet();else if(R.phase==='rest')next();else if(R.phase==='intro')begin()}});
 document.addEventListener('visibilitychange',()=>{if(RN&&!document.hidden&&RN.phase==='run')lockOn();if(R&&!document.hidden&&R.phase!=='done'&&R.phase!=='intro')lockOn()});
 addEventListener('hashchange',route);
-route();setSync('local');connect();
+route();setSync('local');connect();if(S.challenges.length)setTimeout(chSyncAll,1500);addEventListener('online',chSyncAll);document.addEventListener('visibilitychange',()=>{if(!document.hidden)chSyncAll()});
 if('serviceWorker' in navigator&&location.protocol==='https:'&&!window.claude){try{navigator.serviceWorker.register('sw.js').catch(()=>{})}catch(e){}}
 try{navigator.storage&&navigator.storage.persist&&navigator.storage.persist().catch(()=>{})}catch(e){}
 }
