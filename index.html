@@ -162,6 +162,18 @@ details[open] .chev{transform:rotate(135deg)}
 .qadd{display:grid;grid-template-columns:48px 48px minmax(0,1fr) 48px 48px;gap:6px;width:100%;align-items:center}
 .qadd button{height:48px;border:0;border-radius:12px;background:var(--fill);font-weight:600;font-size:16px}
 .qadd input{border:0;background:transparent;text-align:center;font-size:36px;font-weight:700;width:100%;outline:none}
+.gps{font-size:13px;font-weight:600;padding:5px 11px;border-radius:99px;background:rgba(255,255,255,.12);color:rgba(235,235,245,.8)}.gps.ok{color:#30d158}.gps.mid{color:#ffd60a}.gps.bad{color:#ff6961}
+.rgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.rgrid>div{background:rgba(255,255,255,.09);border-radius:14px;padding:10px 14px}.rgrid b{display:block;font-size:28px;font-weight:700;line-height:1.15}
+.rnmap{height:170px;border-radius:16px;background:rgba(255,255,255,.06);overflow:hidden;flex:none}.rnmap svg{width:100%;height:100%}
+.runbadge{width:88px;height:88px;border-radius:50%;margin:0 auto;display:grid;place-items:center;background:linear-gradient(140deg,#ff7a45,#c2182e);color:#fff}.runbadge svg{width:48px;height:48px}
+.runic{width:34px;height:34px;border-radius:50%;flex:none;display:grid;place-items:center;background:linear-gradient(140deg,#ff7a45,#c2182e);color:#fff}.runic svg{width:20px;height:20px}
+.rmap{height:250px;border-radius:16px;overflow:hidden;background:rgba(127,127,127,.12);position:relative;flex:none;z-index:0}.rmap .trace{width:100%;height:100%}
+.rstats{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:8px;margin-top:12px;text-align:left}
+.rstats>div{border-radius:14px;padding:10px 12px;background:rgba(127,127,127,.15)}.rstats span{font-size:13px;opacity:.65;display:block}.rstats b{font-size:26px;font-weight:700}.rstats small{font-size:13px;opacity:.6;margin-left:3px;font-weight:600}
+.rsec{font-size:13px;opacity:.65;margin:18px 4px 8px;text-align:left}
+.splits{display:grid;gap:7px}.split{display:grid;grid-template-columns:62px minmax(0,1fr) 62px;align-items:center;gap:8px;font-size:15px;text-align:left}.split .bar{height:12px;border-radius:6px;background:rgba(127,127,127,.18);overflow:hidden}.split i{display:block;height:100%;background:#ff4f3f;border-radius:6px}.split i.best{background:#30d158}.split b{text-align:right}
+.elev svg{width:100%;height:90px;display:block}.prs{margin-top:12px;text-align:left}.rdet{padding-bottom:8px}
+.feat.run{background:linear-gradient(140deg,#ff9f0a 0%,#ff5e3a 50%,#d1173a 100%)}
 .toast{position:fixed;top:calc(10px + env(safe-area-inset-top));left:50%;transform:translateX(-50%);background:var(--bar);-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px);color:var(--ink);padding:11px 20px;border-radius:99px;box-shadow:0 10px 30px rgba(0,0,0,.18);z-index:60;font-weight:600;font-size:15px;animation:drop .35s cubic-bezier(.2,.9,.25,1);white-space:nowrap}
 /* séance immersive */
 .run{position:fixed;inset:0;z-index:20;background:#000;color:#fff;display:flex;flex-direction:column;padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom);color-scheme:dark}
@@ -273,7 +285,7 @@ if(!S||!Array.isArray(S.exercises))S=JSON.parse(JSON.stringify(DEF));
 const norm=()=>{S.plan=S.plan||{};for(let i=0;i<7;i++)if(!Array.isArray(S.plan[i]))S.plan[i]=[];S.workouts=S.workouts||[];S.goals=S.goals||[];S.challenges=S.challenges||[];S.history=(S.history||[]).sort((a,b)=>b.ts-a.ts)};
 norm();
 const exById=id=>S.exercises.find(e=>e.id===id);
-const woById=id=>S.workouts.find(w=>w.id===id);
+const woById=id=>id==='run'?RUN_WO:S.workouts.find(w=>w.id===id);
 
 /* ---------- sauvegarde ---------- */
 let db=null,me=null,flushing=false,tmr=null;const dirty=new Set();
@@ -308,7 +320,7 @@ async function connect(){
   catch(e){clearTimeout(slow);setSync('local')}}
 
 /* ---------- helpers ---------- */
-const estMin=w=>Math.max(1,Math.round(w.items.reduce((t,it)=>{const ex=exById(it.ex);const work=ex&&ex.type==='time'?+it.reps:40;return t+it.sets*(work+(+it.rest||0))},0)/60));
+const estMin=w=>w.est||Math.max(1,Math.round(w.items.reduce((t,it)=>{const ex=exById(it.ex);const work=ex&&ex.type==='time'?+it.reps:40;return t+it.sets*(work+(+it.rest||0))},0)/60));
 const unit=ex=>ex&&ex.type==='time'?'s':'reps';
 const names=w=>w.items.map(it=>exById(it.ex)).filter(Boolean).map(e=>e.name);
 function lastFor(exId){for(const h of S.history){const e=h.entries.find(x=>x.ex===exId&&x.sets.length);if(e)return{date:h.date,sets:e.sets}}return null}
@@ -360,7 +372,7 @@ function vToday(){
   const feats=gToday.map(({g,ex,p})=>{const u=ex.type==='time'?' s':'',h=p.hist.find(h=>h.date===today),s=p.sess[0];
       if(h)return `<div class="feat goal done"><p class="k">✓ Objectif ${g.tSets} × ${g.tReps}${u}</p><h3 class="rnd">${esc(h.entries[0].sets.map(x=>x.reps).join(' · '))}${u}</h3><p class="k">${esc(ex.name)} · prochaine : ${s?s.sets+' × '+s.reps+u+', '+esc(fmtDate(s.date)):'—'}</p></div>`;
       return `<div class="feat goal"><p class="k">Objectif ${g.tSets} × ${g.tReps}${u}${s.test?' · test final':s.deload?' · allégée':''}</p><h3 class="rnd">${s.sets} × ${s.reps}${u}</h3><p class="k">${esc(ex.name)} · repos ${g.rest} s</p><button class="go" data-act="startgoal" data-id="${esc(g.id)}" aria-label="Démarrer l’objectif ${esc(ex.name)}">${PLAY}</button></div>`})
-    .concat(planned.map(w=>{const d=doneW(w.id),n=names(w);return `<div class="feat ${d?'done':''}"><p class="k">${d?'✓ Faite aujourd’hui':'Séance · ≈ '+estMin(w)+' min'}</p><h3>${esc(w.name)}</h3><p class="k">${w.items.length} exercices · ${esc(n.slice(0,3).join(', '))}${n.length>3?'…':''}</p><button class="go" data-act="start" data-id="${esc(w.id)}" aria-label="Démarrer ${esc(w.name)}">${PLAY}</button></div>`})).join('');
+    .concat(planned.map(w=>{const d=doneW(w.id),n=names(w);if(w.id==='run')return `<div class="feat run ${d?'done':''}"><p class="k">${d?'✓ Faite aujourd’hui':'Course · suivi GPS'}</p><h3>Course à pied</h3><p class="k">Distance, allure et parcours en direct</p><button class="go" data-act="start" data-id="run" aria-label="Démarrer la course">${PLAY}</button></div>`;return `<div class="feat ${d?'done':''}"><p class="k">${d?'✓ Faite aujourd’hui':'Séance · ≈ '+estMin(w)+' min'}</p><h3>${esc(w.name)}</h3><p class="k">${w.items.length} exercices · ${esc(n.slice(0,3).join(', '))}${n.length>3?'…':''}</p><button class="go" data-act="start" data-id="${esc(w.id)}" aria-label="Démarrer ${esc(w.name)}">${PLAY}</button></div>`})).join('');
   const strip='<div class="group"><div class="week">'+DS.map((l,i)=>{const d=addD(mon,i),k=dk(d);const done=S.history.some(h=>h.date===k),pl=S.plan[i].length||S.goals.some(g=>g.days.includes(i)&&k>=g.start&&k<=g.end);
     return `<div><span class="wd">${l}</span><span class="wn rnd ${k===today?'today':''}">${d.getDate()}</span><span class="wdot ${done?'done':pl?'plan':''}"></span></div>`}).join('')+`</div></div>`;
   const last=S.history[0],others=S.workouts.filter(w=>!planned.includes(w));
@@ -369,9 +381,9 @@ function vToday(){
     <div class="stack">${feats||`<div class="group"><div class="empty"><h2>Jour de repos</h2><p>Rien de prévu aujourd’hui. Récupère, ou lance une séance ci-dessous si l’envie te prend.</p></div></div>`}</div>
     <p class="sec">Cette semaine · ${wk} séance${wk>1?'s':''} faite${wk>1?'s':''}</p>${strip}
   </div><div>
-    ${last?`<p class="sec">Dernière séance</p><div class="group"><a class="cell" href="#historique"><span class="sp">${esc(last.name)}<span class="sub">${esc(fmtDate(last.date))} · ${last.dur?last.dur+' min':'ajout rapide'} · ${last.entries.reduce((t,e)=>t+e.sets.length,0)} séries</span></span><span class="chev"></span></a></div>`:''}
+    ${last?`<p class="sec">Dernière séance</p><div class="group"><a class="cell" href="#historique"><span class="sp">${esc(last.name)}<span class="sub">${esc(fmtDate(last.date))} · ${last.dur?last.dur+' min':'ajout rapide'} · ${last.run?fmtKm(last.run.dist)+' km':last.entries.reduce((t,e)=>t+e.sets.length,0)+' séries'}</span></span><span class="chev"></span></a></div>`:''}
     ${FB_CONFIG&&S.challenges.some(c=>chStatus(c).k==='live')?`<p class="sec">Défis en cours</p><div class="group">${S.challenges.filter(c=>chStatus(c).k==='live').map(c=>{const r=chRanks[c.code];return `<button class="cell" data-act="chopen" data-id="${esc(c.code)}"><span class="trophy sm">${TROPHY}</span><span class="sp">${esc(c.name)}<span class="sub">${esc(chStatus(c).txt)}</span></span>${r?`<span class="val num">${r.rank}<sup>${r.rank===1?'er':'e'}</sup>/${r.n}</span>`:''}<span class="chev"></span></button>`}).join('')}</div>`:''}
-    ${others.length?`<p class="sec">Lancer une autre séance</p><div class="group">${others.map(w=>`<div class="cell"><span class="sp">${esc(w.name)}<span class="sub">≈ ${estMin(w)} min · ${w.items.length} exercices</span></span><button class="play" data-act="start" data-id="${esc(w.id)}" aria-label="Démarrer ${esc(w.name)}">${PLAY}</button></div>`).join('')}</div>`:''}
+    ${`<p class="sec">Lancer une autre séance</p><div class="group">${planned.includes(RUN_WO)?'':runStartRow()}${others.map(w=>`<div class="cell"><span class="sp">${esc(w.name)}<span class="sub">≈ ${estMin(w)} min · ${w.items.length} exercices</span></span><button class="play" data-act="start" data-id="${esc(w.id)}" aria-label="Démarrer ${esc(w.name)}">${PLAY}</button></div>`).join('')}</div>`}
   </div></div>`}
 
 function goalCard(g){const ex=exById(g.ex);if(!ex)return'';const p=goalPlan(g),u=ex.type==='time'?' s':'',today=dk(new Date());
@@ -399,7 +411,7 @@ function vGoals(){
 
 function vPlan(){
   const now=new Date(),mon=monday(now),today=dk(now);
-  const opts=S.workouts.map(w=>`<option value="${esc(w.id)}">${esc(w.name)}</option>`).join('');
+  const opts='<option value="run">Course à pied</option>'+S.workouts.map(w=>`<option value="${esc(w.id)}">${esc(w.name)}</option>`).join('');
   const total=Object.values(S.plan).reduce((t,a)=>t+a.length,0);
   return lt('Planning',`Programme type répété chaque semaine · ${total} séance${total>1?'s':''}`)+`<div class="cols">`+[[0,1,2,3],[4,5,6]].map(col=>'<div>'+col.map(i=>{const d=addD(mon,i),k=dk(d);
     const hs=S.history.filter(h=>h.date===k);
@@ -412,7 +424,7 @@ function vPlan(){
 
 function vWorkouts(){
   return lt('Séances',S.workouts.length+' séance'+(S.workouts.length>1?'s':'')+' · touche pour modifier')+`<div class="seg" role="tablist"><button role="tab" data-act="go2" data-h="seances" class="${cur==='seances'?'on':''}">Mes séances</button><button role="tab" data-act="go2" data-h="exercices" class="${cur==='exercices'?'on':''}">Exercices</button></div>`+(S.workouts.length?
-  `<div class="group">${S.workouts.map(w=>{const days=DAYS.filter((_,i)=>S.plan[i].includes(w.id)).map(d=>d.slice(0,3));
+  `<div class="group">${runStartRow()}${S.workouts.map(w=>{const days=DAYS.filter((_,i)=>S.plan[i].includes(w.id)).map(d=>d.slice(0,3));
     return `<div class="cell"><button class="cellbtn" data-act="editwo" data-id="${esc(w.id)}"><b style="font-weight:600">${esc(w.name)}</b><span class="sub">${w.items.length} exercices · ≈ ${estMin(w)} min · ${days.length?esc(days.join(', ')):'non planifiée'}</span></button><button class="play" data-act="start" data-id="${esc(w.id)}" aria-label="Démarrer ${esc(w.name)}">${PLAY}</button></div>`}).join('')}</div>`
   :`<div class="group"><div class="empty"><h2>Aucune séance</h2><p>Compose ta première séance avec les exercices de ta bibliothèque.</p><button class="btn" data-act="newwo">Nouvelle séance</button></div></div>`)}
 
@@ -439,9 +451,9 @@ function vHist(){
   return lt('Progrès',H.length+' séance'+(H.length>1?'s':'')+' enregistrée'+(H.length>1?'s':''))+`<div class="cols"><div>
    <div class="group tiles"><div><b class="num">${HM.length}</b><span>séances ce mois</span></div><div><b class="num">${streak}</b><span>semaine${streak>1?'s':''} d’affilée</span></div><div><b class="num">${HM.reduce((t,h)=>t+h.dur,0)}</b><span>minutes ce mois</span></div></div>
    <p class="sec">Séances par semaine</p><div class="group"><div class="bars">${weeks.map(w=>`<div><span class="num">${w.n||''}</span><i class="${w.n?'':'zero'}" style="height:${w.n/max*80}%"></i>${w.l}</div>`).join('')}</div></div>
-   <p class="sec">Progression par exercice</p><div class="group"><label class="cell"><span class="sp">Exercice</span><select class="rin" data-act="progex" aria-label="Exercice">${usedEx.map(e=>`<option value="${esc(e.id)}" ${e.id===progEx?'selected':''}>${esc(e.name)}</option>`).join('')}</select></label>
-     <div class="cell" style="display:block;padding-bottom:4px"><span class="sub" id="chartlbl"></span></div><div class="fig"><svg id="chart" role="img" aria-label="Courbe de progression"></svg></div></div>
-  </div><div><p class="sec">Historique</p><div class="group">${H.map(h=>`<details class="cell" style="display:block"><summary><span class="sp">${esc(h.name)}<span class="sub">${esc(fmtDate(h.date))} · ${h.dur?h.dur+' min':'ajout rapide'} · ${h.entries.reduce((t,e)=>t+e.sets.length,0)} séries</span></span><span class="chev" style="transform:rotate(135deg)"></span></summary>
+   ${runSec()}${usedEx.length?`<p class="sec">Progression par exercice</p><div class="group"><label class="cell"><span class="sp">Exercice</span><select class="rin" data-act="progex" aria-label="Exercice">${usedEx.map(e=>`<option value="${esc(e.id)}" ${e.id===progEx?'selected':''}>${esc(e.name)}</option>`).join('')}</select></label>
+     <div class="cell" style="display:block;padding-bottom:4px"><span class="sub" id="chartlbl"></span></div><div class="fig"><svg id="chart" role="img" aria-label="Courbe de progression"></svg></div></div>`:''}
+  </div><div><p class="sec">Historique</p><div class="group">${H.map(h=>h.run?runRowH(h):`<details class="cell" style="display:block"><summary><span class="sp">${esc(h.name)}<span class="sub">${esc(fmtDate(h.date))} · ${h.dur?h.dur+' min':'ajout rapide'} · ${h.entries.reduce((t,e)=>t+e.sets.length,0)} séries</span></span><span class="chev" style="transform:rotate(135deg)"></span></summary>
     <div style="padding-top:8px">${h.entries.map(e=>{const ex=exById(e.ex);return `<div class="prow"><span>${esc(ex?ex.name:'Exercice supprimé')}</span><b class="num" style="text-align:right">${esc(e.sets.map(s=>setTxt(s,ex)).join(' · '))}</b></div>`}).join('')}
     <button class="lnk d" data-act="delh" data-id="${esc(h.id)}" style="padding-left:0">Supprimer cette séance</button></div></details>`).join('')}</div>${dataSec()}</div></div>`}
 
@@ -465,8 +477,13 @@ function drawChart(){const s=$('#chart');if(!s)return;const r=series();if(!r||!r
   s.innerHTML=g}
 
 /* ---------- défis entre amis ---------- */
-const FB_CONFIG={apiKey:"AIzaSyAKbMmWaqDhuwR63UnqW1iQiIXItXRyhRE",authDomain:"cadence-3698c.firebaseapp.com",projectId:"cadence-3698c",storageBucket:"cadence-3698c.firebasestorage.app",messagingSenderId:"1189601091",appId:"1:1189601091:web:b2d970e5b3ebd4e05099f6"}; // ← remplacé par la configuration Firebase de l'app
-const CH_TYPES={total:'Le plus sur la période',weekly:'Objectif par semaine',max:'Max en une série'};
+const FB_CONFIG={apiKey:"AIzaSyAKbMmWaqDhuwR63UnqW1iQiIXItXRyhRE",authDomain:"cadence-3698c.firebaseapp.com",projectId:"cadence-3698c",storageBucket:"cadence-3698c.firebasestorage.app",messagingSenderId:"1189601091",appId:"1:1189601091:web:b2d970e5b3ebd4e05099f6"};
+const CH_TYPES={total:'Le plus sur la période',weekly:'Objectif par semaine',max:'Max en une série',fastest:'Le plus rapide sur une distance'};
+const CH_TYPES_RUN={total:'Le plus de km sur la période',weekly:'Km par semaine',max:'La plus longue sortie',fastest:'Le plus rapide sur une distance'};
+const CH_SHORT_RUN={total:'Total km',weekly:'Km/sem.',max:'Plus longue',fastest:'Plus rapide'};
+const CH_HELP_RUN={total:'Gagne celui qui court le plus de kilomètres sur la période.',weekly:'Chaque semaine, il faut courir le nombre de km visé. Gagne celui qui valide le plus de semaines (puis le plus de km).',max:'Gagne celui qui fait la plus longue sortie pendant la période.',fastest:'Gagne celui qui court la distance choisie le plus vite, mesuré sur ses courses GPS (ou saisies à la main).'};
+const chHelp=c=>c.sport==='run'?CH_HELP_RUN[c.type]:CH_HELP[c.type];
+const chTypeName=c=>c.sport==='run'?CH_TYPES_RUN[c.type]:CH_TYPES[c.type];
 const CH_SHORT={total:'Total',weekly:'Hebdo',max:'Max série'};
 const CH_HELP={total:'Gagne celui qui cumule le plus de répétitions sur toute la période, toutes séances confondues.',weekly:'Chaque semaine, il faut atteindre l’objectif. Gagne celui qui valide le plus de semaines (puis le plus gros total).',max:'Gagne celui qui fait le plus de répétitions d’affilée, en une seule série, pendant la période.'};
 const PAL=['#ff6b5b','#5e5ce6','#30b0c7','#34c759','#ff9f0a','#bf5af2','#ff375f','#0a84ff'];
@@ -482,24 +499,30 @@ function fb(){if(!FB_CONFIG)return Promise.reject(new Error('noconfig'));if(fbP)
 const chCode=()=>{const A='ABCDEFGHJKMNPQRSTUVWXYZ23456789';let s='';for(let i=0;i<6;i++)s+=A[Math.floor(Math.random()*A.length)];return s};
 const normName=s=>String(s||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^a-z0-9]+/g,' ').trim();
 const chById=code=>S.challenges.find(c=>c.code===code);
-const chUnit=c=>c.exType==='time'?' s':'';
+const chUnit=c=>c.sport==='run'?' km':c.exType==='time'?' s':'';
 const ini=n=>String(n||'?').trim().slice(0,1).toUpperCase()||'?';
 const colOf=s=>{let h=0;for(const ch of String(s))h=(h*31+ch.charCodeAt(0))|0;return PAL[Math.abs(h)%PAL.length]};
 function chStatus(c){const t=dk(new Date());if(t<c.start)return{k:'soon',txt:'Commence le '+fmtDate(c.start)};if(t>c.end)return{k:'end',txt:'Terminé le '+fmtDate(c.end)};
   const n=Math.round((pd(c.end)-pd(t))/864e5);return{k:'live',txt:n?'Encore '+(n+1)+' jours':'Dernier jour'}}
-function chScore(c){const sets=[];S.history.forEach(h=>{if(h.date<c.start||h.date>c.end)return;h.entries.forEach(e=>{if(e.ex===c.exId)e.sets.forEach(s=>sets.push({d:h.date,r:+s.reps||0}))})});
+function chScoreRun(c){const rs=runs().filter(h=>h.date>=c.start&&h.date<=c.end),km=h=>h.run.dist/1000,total=+rs.reduce((t,h)=>t+km(h),0).toFixed(2);let best=0;
+  if(c.type==='fastest'){const e=rs.map(h=>effortOf(h,c.dist*1000)).filter(Boolean);best=e.length?Math.round(Math.min(...e)):0}else best=+Math.max(0,...rs.map(km)).toFixed(2);
+  const weeks=[];if(c.type==='weekly')for(let i=0;i<c.weeks;i++){const a=dk(addD(pd(c.start),7*i)),b=dk(addD(pd(c.start),7*i+6));weeks.push(+rs.filter(h=>h.date>=a&&h.date<=b).reduce((t,h)=>t+km(h),0).toFixed(2))}
+  return{best,total,weeks,ok:weeks.filter(w=>w>=c.target).length}}
+function chScore(c){if(c.sport==='run')return chScoreRun(c);const sets=[];S.history.forEach(h=>{if(h.date<c.start||h.date>c.end)return;h.entries.forEach(e=>{if(e.ex===c.exId)e.sets.forEach(s=>sets.push({d:h.date,r:+s.reps||0}))})});
   const best=Math.max(0,...sets.map(s=>s.r)),total=sets.reduce((t,s)=>t+s.r,0),weeks=[];
   if(c.type==='weekly')for(let i=0;i<c.weeks;i++){const a=dk(addD(pd(c.start),7*i)),b=dk(addD(pd(c.start),7*i+6));weeks.push(sets.filter(s=>s.d>=a&&s.d<=b).reduce((t,s)=>t+s.r,0))}
   return{best,total,weeks,ok:weeks.filter(w=>w>=c.target).length}}
-const chRank=(c,l)=>l.slice().sort((a,b)=>c.type==='max'?(+b.best||0)-(+a.best||0):c.type==='total'?(+b.total||0)-(+a.total||0):((+b.ok||0)-(+a.ok||0))||((+b.total||0)-(+a.total||0)));
-const chVal=(c,p)=>c.type==='max'?(+p.best||0)+chUnit(c):c.type==='total'?(+p.total||0)+chUnit(c):(+p.ok||0)+'/'+c.weeks+' sem.';
-const chSub=c=>c.type==='weekly'?`${c.target}${chUnit(c)||''} ${esc(c.exName)} / semaine · ${c.weeks} semaines`:c.type==='max'?`Max ${esc(c.exName)} d’affilée`:`Le plus de ${esc(c.exName)}`;
+const fbest=x=>+x.best>0?+x.best:1e12;
+const chRank=(c,l)=>l.slice().sort((a,b)=>c.type==='fastest'?fbest(a)-fbest(b):c.type==='max'?(+b.best||0)-(+a.best||0):c.type==='total'?(+b.total||0)-(+a.total||0):((+b.ok||0)-(+a.ok||0))||((+b.total||0)-(+a.total||0)));
+const chVal=(c,p)=>c.sport==='run'?(c.type==='fastest'?(+p.best>0?fmtDur(+p.best):'—'):c.type==='weekly'?(+p.ok||0)+'/'+c.weeks+' sem.':kmTxt(c.type==='max'?p.best:p.total)+' km'):c.type==='max'?(+p.best||0)+chUnit(c):c.type==='total'?(+p.total||0)+chUnit(c):(+p.ok||0)+'/'+c.weeks+' sem.';
+const chDesc=c=>c.sport==='run'?(c.type==='weekly'?`${kmTxt(c.target)} km par semaine pendant ${c.weeks} semaines`:c.type==='fastest'?`Meilleur temps sur ${kmTxt(c.dist)} km`:c.type==='max'?'La plus longue sortie':'Le plus de kilomètres en course'):c.type==='weekly'?`${c.target}${chUnit(c)} ${c.exName} par semaine pendant ${c.weeks} semaines`:c.type==='max'?`Max ${c.exName} d’affilée`:`Le plus de ${c.exName}`;
+const chSub=c=>esc(chDesc(c));
 async function chPush(c,force){const sc=chScore(c),sig=JSON.stringify(sc)+(S.pseudo||'');if(!force&&c.pushed===sig)return;
   try{const {uid,fs}=await fb();await fs.collection('challenges').doc(c.code).collection('players').doc(uid).set({name:String(S.pseudo||'Moi').slice(0,24),best:sc.best,total:sc.total,weeks:sc.weeks,ok:sc.ok,updatedAt:Date.now()});c.pushed=sig;save()}catch(e){}}
 function chSyncAll(){if(FB_CONFIG)S.challenges.forEach(c=>chPush(c))}
-function chClean(m){if(!m||!CH_TYPES[m.type])return null;const D=/^\d{4}-\d{2}-\d{2}$/;if(!D.test(m.start)||!D.test(m.end))return null;
-  return{name:String(m.name||'Défi').slice(0,60),type:m.type,exName:String(m.exName||'Exercice').slice(0,60),exGroup:GROUPS.includes(m.exGroup)?m.exGroup:GROUPS[3],exType:m.exType==='time'?'time':'reps',
-    start:m.start,end:m.end,target:Math.max(1,Math.min(100000,+m.target||1)),weeks:Math.max(1,Math.min(52,+m.weeks||1)),ownerName:String(m.ownerName||'').slice(0,24)}}
+function chClean(m){if(!m||!CH_TYPES[m.type])return null;const run=m.sport==='run';if(m.type==='fastest'&&!run)return null;const D=/^\d{4}-\d{2}-\d{2}$/;if(!D.test(m.start)||!D.test(m.end))return null;
+  return{name:String(m.name||'Défi').slice(0,60),type:m.type,sport:run?'run':'reps',exName:run?'Course à pied':String(m.exName||'Exercice').slice(0,60),exGroup:GROUPS.includes(m.exGroup)?m.exGroup:GROUPS[3],exType:run?'km':m.exType==='time'?'time':'reps',
+    start:m.start,end:m.end,target:Math.max(.1,Math.min(100000,+m.target||1)),weeks:Math.max(1,Math.min(52,+m.weeks||1)),dist:Math.max(.1,Math.min(100,+m.dist||5)),ownerName:String(m.ownerName||'').slice(0,24)}}
 
 function vDefis(){
   if(!FB_CONFIG)return lt('Défis','')+`<div class="group"><div class="empty"><div class="trophy">${TROPHY}</div><h2>Défis entre amis</h2><p>${window.claude?'Les défis fonctionnent dans la version installée de Cadence (celle hébergée sur GitHub Pages).':'La base partagée n’est pas encore connectée à l’app. Une fois Firebase configuré, tu pourras créer des défis et inviter tes amis.'}</p></div></div>`;
@@ -513,24 +536,26 @@ function vDefis(){
 
 function pseudoCell(){return S.pseudo?'':`<p class="sec">Ton pseudo, visible par tes amis</p><div class="group"><label class="cell"><input class="full" id="pseudo" maxlength="24" placeholder="Ex. Marco" autocomplete="nickname" aria-label="Pseudo"></label></div>`}
 function readPseudo(){const i=$('#pseudo');if(i){const v=i.value.trim().slice(0,24);if(!v){toast('Choisis un pseudo');return false}S.pseudo=v}return true}
-function newCh(){const ex=exById('pompes')?'pompes':(S.exercises[0]||{}).id;cdraft={name:'',type:'weekly',ex,start:dk(new Date()),end:dk(addD(new Date(),30)),target:200,weeks:4};drawCh()}
+function newCh(){const ex=exById('pompes')?'pompes':(S.exercises[0]||{}).id;cdraft={name:'',sport:'reps',type:'weekly',ex,start:dk(new Date()),end:dk(addD(new Date(),30)),target:200,weeks:4,dist:5};drawCh()}
 function drawCh(){const d=cdraft,st=box.scrollTop,ex=exById(d.ex),u=ex&&ex.type==='time'?'secondes':'reps';
   const opts=S.exercises.slice().sort((a,b)=>a.name.localeCompare(b.name,'fr')).map(e=>`<option value="${esc(e.id)}" ${e.id===d.ex?'selected':''}>${esc(e.name)}</option>`).join('');
   const end=d.type==='weekly'?dk(addD(pd(d.start),7*d.weeks-1)):d.end;
+  const run=d.sport==='run',keys=run?['total','weekly','max','fastest']:['total','weekly','max'];
   openSheet(head('Nouveau défi','chcreate','Créer')+`
-  <div class="seg" role="tablist">${Object.keys(CH_TYPES).map(k=>`<button role="tab" aria-selected="${k===d.type}" class="${k===d.type?'on':''}" data-act="cdtype" data-t="${k}">${CH_SHORT[k]}</button>`).join('')}</div>
-  <p class="sec" style="margin-top:0"><b style="color:var(--ink)">${CH_TYPES[d.type]}</b> · ${CH_HELP[d.type]}</p>
-  <div class="group"><label class="cell"><input class="full" data-c="name" maxlength="60" value="${esc(d.name)}" placeholder="Nom du défi, ex. Novembre des pompes" aria-label="Nom du défi"></label>
-  <label class="cell"><span class="sp">Exercice</span><select class="rin" data-c="ex">${opts}</select></label></div>
+  <div class="seg" role="tablist" style="margin-bottom:8px"><button role="tab" aria-selected="${!run}" class="${run?'':'on'}" data-act="cdsport" data-s="reps">Renforcement</button><button role="tab" aria-selected="${run}" class="${run?'on':''}" data-act="cdsport" data-s="run">Course à pied</button></div>
+  <div class="seg" role="tablist">${keys.map(k=>`<button role="tab" aria-selected="${k===d.type}" class="${k===d.type?'on':''}" data-act="cdtype" data-t="${k}">${run?CH_SHORT_RUN[k]:CH_SHORT[k]}</button>`).join('')}</div>
+  <p class="sec" style="margin-top:0"><b style="color:var(--ink)">${chTypeName(d)}</b> · ${chHelp(d)}</p>
+  <div class="group"><label class="cell"><input class="full" data-c="name" maxlength="60" value="${esc(d.name)}" placeholder="${run?'Nom du défi, ex. Décembre en baskets':'Nom du défi, ex. Novembre des pompes'}" aria-label="Nom du défi"></label>
+  ${run?(d.type==='fastest'?`<label class="cell"><span class="sp">Distance</span><select class="rin" data-c="dist">${[1,3,5,10,21.1,42.2].map(v=>`<option value="${v}" ${+d.dist===v?'selected':''}>${kmTxt(v)} km</option>`).join('')}</select></label>`:''):`<label class="cell"><span class="sp">Exercice</span><select class="rin" data-c="ex">${opts}</select></label>`}</div>
   <p class="sec">${d.type==='weekly'?'Objectif':'Période'}</p><div class="group">
-  ${d.type==='weekly'?`<label class="cell"><span class="sp">Objectif par semaine (${u})</span><input class="rin num" type="number" inputmode="numeric" min="1" data-c="target" value="${d.target}"></label>
+  ${d.type==='weekly'?`<label class="cell"><span class="sp">Objectif par semaine (${run?'km':u})</span><input class="rin num" type="${run?'text':'number'}" inputmode="${run?'decimal':'numeric'}" min="1" data-c="target" value="${run?kmTxt(d.target).replace(/,0$/,''):d.target}"></label>
     <label class="cell"><span class="sp">Nombre de semaines</span><input class="rin num" type="number" inputmode="numeric" min="1" max="52" data-c="weeks" value="${d.weeks}"></label>`:''}
   <label class="cell"><span class="sp">Début</span><input class="rin" type="date" data-c="start" value="${esc(d.start)}"></label>
   ${d.type==='weekly'?`<div class="cell"><span class="sp">Fin</span><span class="val" id="chend">${esc(fmtLong(end))}</span></div>`:`<label class="cell"><span class="sp">Fin</span><input class="rin" type="date" data-c="end" value="${esc(d.end)}" min="${esc(d.start)}"></label>`}</div>
-  ${pseudoCell()}<p class="sec">Tes séances et ajouts rapides sur cet exercice, pendant la période, comptent automatiquement.</p>`);box.scrollTop=st}
-async function chCreate(b){const d=cdraft,ex=exById(d.ex);if(!ex){toast('Choisis un exercice');return}if(!readPseudo())return;
+  ${pseudoCell()}<p class="sec">${run?'Tes courses GPS (et celles saisies à la main) pendant la période comptent automatiquement.':'Tes séances et ajouts rapides sur cet exercice, pendant la période, comptent automatiquement.'}</p>`);box.scrollTop=st}
+async function chCreate(b){const d=cdraft,run=d.sport==='run',ex=run?{id:'run',name:'Course à pied',group:'Cardio',type:'km'}:exById(d.ex);if(!ex){toast('Choisis un exercice');return}if(!readPseudo())return;
   const end=d.type==='weekly'?dk(addD(pd(d.start),7*Math.max(1,d.weeks|0)-1)):d.end;if(!d.start||!end||end<d.start){toast('Vérifie les dates');return}
-  const meta={name:(d.name.trim()||('Défi '+ex.name.toLowerCase())).slice(0,60),type:d.type,exName:ex.name,exGroup:ex.group,exType:ex.type,start:d.start,end,target:Math.max(1,d.target|0),weeks:Math.max(1,Math.min(52,d.weeks|0)),ownerName:S.pseudo,createdAt:Date.now()};
+  const meta={name:(d.name.trim()||(run?'Défi course':'Défi '+ex.name.toLowerCase())).slice(0,60),type:d.type,sport:run?'run':'reps',dist:+d.dist||5,exName:ex.name,exGroup:ex.group,exType:ex.type,start:d.start,end,target:run?Math.max(.5,+d.target||1):Math.max(1,d.target|0),weeks:Math.max(1,Math.min(52,d.weeks|0)),ownerName:S.pseudo,createdAt:Date.now()};
   b.disabled=true;b.textContent='…';
   try{const {uid,fs}=await fb();const code=chCode();await fs.collection('challenges').doc(code).set({...meta,owner:uid});
     const c={...meta,code,exId:ex.id,owner:uid};S.challenges.push(c);save();closeSheet();if(cur!=='defis')location.hash='defis';else render();await chPush(c,true);chOpen(code);toast('Défi créé : invite tes amis !')}
@@ -544,22 +569,24 @@ async function chJoinPrompt(code){code=String(code||'').toUpperCase().replace(/[
     if(!m){closeSheet();toast('Défi introuvable');return}
     window.__join={code,m};
     openSheet(head('Invitation','chjoin','Rejoindre')+`<div class="group"><div class="empty" style="padding:22px 16px"><div class="trophy">${TROPHY}</div><h2>${esc(m.name)}</h2><p>${m.ownerName?esc(m.ownerName)+' t’invite · ':''}${chSub(m)}<br>${esc(fmtDate(m.start))} → ${esc(fmtDate(m.end))}</p></div></div>
-      <p class="sec">${CH_HELP[m.type]}</p>${pseudoCell()}<button class="btn w" data-act="chjoin" style="margin-top:16px">Rejoindre le défi</button>`)}
+      <p class="sec">${chHelp(m)}</p>${pseudoCell()}<button class="btn w" data-act="chjoin" style="margin-top:16px">Rejoindre le défi</button>`)}
   catch(e){closeSheet();toast('Pas de connexion à la base. Réessaie.')}}
 function chJoin(){const j=window.__join;if(!j||!readPseudo())return;const m=j.m;
-  let ex=S.exercises.find(e=>normName(e.name)===normName(m.exName));
+  let ex=m.sport==='run'?{id:'run'}:S.exercises.find(e=>normName(e.name)===normName(m.exName));
   if(!ex){ex=E('x'+nid(),m.exName,m.exGroup,m.exType);S.exercises.push(ex)}
   const c={...m,code:j.code,exId:ex.id};S.challenges.push(c);save();window.__join=null;closeSheet();if(cur!=='defis')location.hash='defis';else render();
   chPush(c,true).then(()=>chOpen(j.code));toast('Tu as rejoint « '+m.name+' »')}
 function chOpen(code){const c=chById(code);if(!c)return;const sc=chScore(c),u=chUnit(c),st=chStatus(c),today=dk(new Date());
   const mine=c.type==='weekly'?`<div class="wk">${sc.weeks.map((w,i)=>{const a=dk(addD(pd(c.start),7*i)),b=dk(addD(pd(c.start),7*i+6)),now=today>=a&&today<=b,ok=w>=c.target;
-      return `<div class="${ok?'ok':''} ${now?'now':''}"><span class="sub">S${i+1}</span><b class="num">${w}</b><i style="width:${Math.min(100,w/c.target*100)}%"></i></div>`}).join('')}</div><span class="sub" style="margin-top:8px">${sc.ok} semaine${sc.ok>1?'s':''} validée${sc.ok>1?'s':''} · objectif ${c.target}${u} par semaine</span>`
+      return `<div class="${ok?'ok':''} ${now?'now':''}"><span class="sub">S${i+1}</span><b class="num">${c.sport==='run'?kmTxt(w):w}</b><i style="width:${Math.min(100,w/c.target*100)}%"></i></div>`}).join('')}</div><span class="sub" style="margin-top:8px">${sc.ok} semaine${sc.ok>1?'s':''} validée${sc.ok>1?'s':''} · objectif ${c.sport==='run'?kmTxt(c.target):c.target}${u} par semaine</span>`
+    :c.sport==='run'?`<div class="rnd" style="font-size:44px;font-weight:700;color:var(--tint);line-height:1.1">${c.type==='fastest'?(sc.best?fmtDur(sc.best):'—'):kmTxt(c.type==='max'?sc.best:sc.total)+' km'}</div><span class="sub">${c.type==='fastest'?'Ton meilleur temps sur '+kmTxt(c.dist)+' km':c.type==='max'?'Ta plus longue sortie':'Tes km sur la période'}</span>`
     :`<div class="rnd" style="font-size:44px;font-weight:700;color:var(--tint);line-height:1.1">${c.type==='max'?sc.best:sc.total}${u}</div><span class="sub">${c.type==='max'?'Ton meilleur résultat d’affilée':'Ton total sur la période'}</span>`;
   openSheet(`<div class="grab"></div><div class="sh"><button class="lnk" data-act="close">Fermer</button><b>${esc(c.name)}</b><button class="lnk b" data-act="chinvite" data-id="${esc(c.code)}">Inviter</button></div>
   <div class="group"><div id="podium"><div class="empty"><p>Chargement du classement…</p></div></div></div>
   <p class="sec">Ma progression · ${esc(st.txt)}</p><div class="group"><div class="cell" style="display:block;padding:14px 16px">${mine}</div>
-    ${st.k!=='soon'?`<div class="cell" style="display:grid;grid-template-columns:${c.type==='max'?'1fr 1fr':'1fr'};gap:10px">${c.type==='max'?`<button class="btn" data-act="chmax" data-id="${esc(c.code)}">${PLAY}Faire mon max</button>`:''}<button class="btn ${c.type==='max'?'t':''}" data-act="chadd" data-id="${esc(c.code)}">${c.type==='max'?'Saisir un résultat':PLUS.replace(/26/g,'20')+'Ajouter des '+(c.exType==='time'?'secondes':'reps')}</button></div>`:''}</div>
-  <p class="sec">Infos</p><div class="group"><div class="cell"><span class="sp">Défi</span><span class="val">${esc(CH_TYPES[c.type])}</span></div><div class="cell"><span class="sp">Exercice</span><span class="val">${esc(c.exName)}</span></div>
+    ${st.k!=='soon'&&c.sport==='run'?`<div class="cell" style="display:grid;grid-template-columns:1fr 1fr;gap:10px"><button class="btn" data-act="start" data-id="run">${PLAY}Courir</button><button class="btn t" data-act="chadd" data-id="${esc(c.code)}">Saisir une course</button></div>`:''}
+    ${st.k!=='soon'&&c.sport!=='run'?`<div class="cell" style="display:grid;grid-template-columns:${c.type==='max'?'1fr 1fr':'1fr'};gap:10px">${c.type==='max'?`<button class="btn" data-act="chmax" data-id="${esc(c.code)}">${PLAY}Faire mon max</button>`:''}<button class="btn ${c.type==='max'?'t':''}" data-act="chadd" data-id="${esc(c.code)}">${c.type==='max'?'Saisir un résultat':PLUS.replace(/26/g,'20')+'Ajouter des '+(c.exType==='time'?'secondes':'reps')}</button></div>`:''}</div>
+  <p class="sec">Infos</p><div class="group"><div class="cell"><span class="sp">Défi</span><span class="val">${esc(chTypeName(c))}</span></div><div class="cell"><span class="sp">${c.sport==='run'?'Sport':'Exercice'}</span><span class="val">${esc(c.exName)}${c.type==='fastest'?' · '+kmTxt(c.dist)+' km':''}</span></div>
     <div class="cell"><span class="sp">Période</span><span class="val">${esc(fmtDate(c.start))} → ${esc(fmtDate(c.end))}</span></div>
     <button class="cell" data-act="chinvite" data-id="${esc(c.code)}"><span class="sp">Code d’invitation</span><b class="num" style="letter-spacing:.15em;color:var(--tint)">${esc(c.code)}</b></button>
     <button class="cell" data-act="chleave" data-id="${esc(c.code)}" style="color:var(--danger);justify-content:center">Quitter le défi</button></div>`);
@@ -575,7 +602,12 @@ function drawPodium(c,list,uid){const p=$('#podium');if(!p)return;p.dataset.ok='
   p.innerHTML=`<div class="podium">${col(1)}${col(0)}${col(2)}</div>`+
    (r.length>3?r.slice(3).map((x,i)=>`<div class="cell"><span class="num" style="width:22px;color:var(--mute);font-weight:600">${i+4}</span><span class="av sm" style="background:${colOf(x.id)}">${esc(ini(x.name))}</span><span class="sp">${esc(x.name)}${x.id===uid?' <b style="color:var(--tint)">(toi)</b>':''}</span><b class="num">${esc(chVal(c,x))}</b></div>`).join(''):'')+
    (r.length<2?'<div class="cell" style="display:block"><span class="sub" style="text-align:center">Invite tes amis pour remplir le podium.</span></div>':'')}
-function chAddSheet(code){const c=chById(code);if(!c)return;const u=c.exType==='time'?'secondes':'répétitions',today=dk(new Date());
+function chAddSheet(code){const c=chById(code);if(!c)return;if(c.sport==='run'){const today=dk(new Date());window.__qa=code;
+  openSheet(head('Saisir une course','chsaverun','Ajouter')+`<p class="sec" style="margin-top:4px">Une course faite sans l’app (montre, tapis…)</p><div class="group">
+  <label class="cell"><span class="sp">Distance (km)</span><input class="rin num" id="qkm" type="text" inputmode="decimal" autocomplete="off" placeholder="5,00"></label>
+  <div class="cell"><span class="sp">Durée</span><input class="rin num" id="qmin" type="number" inputmode="numeric" min="0" placeholder="min" style="max-width:70px"><span class="val">:</span><input class="rin num" id="qsec" type="number" inputmode="numeric" min="0" max="59" placeholder="s" style="max-width:50px"></div>
+  <label class="cell"><span class="sp">Date</span><input class="rin" id="qdate" type="date" value="${today<c.end?today:c.end}" min="${esc(c.start)}" max="${today<c.end?today:esc(c.end)}"></label></div>
+  <p class="sec">Sans tracé GPS, l’allure moyenne sert à estimer tes temps sur distance.</p>`);return}const u=c.exType==='time'?'secondes':'répétitions',today=dk(new Date());
   window.__qa=code;openSheet(head(c.type==='max'?'Mon résultat':'Ajout rapide','chsave','Ajouter')+`<p class="sec" style="margin-top:4px">${c.type==='max'?'Combien de '+u+' d’affilée, en une seule série ?':'Combien de '+u+' de '+esc(c.exName)+' as-tu faites ?'}</p>
   <div class="group"><div class="cell"><div class="qadd"><button data-act="qd" data-d="-5">−5</button><button data-act="qd" data-d="-1">−1</button><input id="qv" class="num" type="number" inputmode="numeric" min="1" value="${c.type==='weekly'?Math.round(c.target/4):20}" aria-label="Nombre"><button data-act="qd" data-d="1">+1</button><button data-act="qd" data-d="5">+5</button></div></div>
   <label class="cell"><span class="sp">Date</span><input class="rin" id="qdate" type="date" value="${today<c.end?today:c.end}" min="${esc(c.start)}" max="${today<c.end?today:esc(c.end)}"></label></div>
@@ -585,7 +617,7 @@ function chSaveQuick(){const c=chById(window.__qa);if(!c)return;const n=Math.max
   const h={id:'h'+nid(),date:d,ts:Date.now(),workoutId:'ch-'+c.code,name:'Ajout rapide · '+c.exName,dur:0,entries:[{ex:c.exId,sets:[{reps:n,load:0}]}]};
   S.history.push(h);S.history.sort((a,b)=>b.ts-a.ts);save([d.slice(0,7)]);chSyncAll();toast('+'+n+' '+(c.exType==='time'?'s':'reps'));chOpen(c.code)}
 async function chInvite(code){const c=chById(code);if(!c)return;const url=location.origin+location.pathname+'#defi-'+c.code;
-  const text=`Rejoins mon défi « ${c.name} » sur Cadence ! ${c.type==='weekly'?c.target+' '+c.exName.toLowerCase()+' par semaine pendant '+c.weeks+' semaines':CH_TYPES[c.type]+' · '+c.exName}. Code : ${c.code}`;
+  const text=`Rejoins mon défi « ${c.name} » sur Cadence ! ${chDesc(c)}. Code : ${c.code}`;
   try{if(navigator.share){await navigator.share({title:'Défi Cadence',text,url});return}}catch(e){if(e&&e.name==='AbortError')return}
   try{await navigator.clipboard.writeText(text+'\n'+url);toast('Invitation copiée')}catch(e){toast('Code : '+c.code)}}
 
@@ -659,7 +691,7 @@ function newEx(){openSheet(head('Nouvel exercice','saveex','Ajouter')+`
   <p class="sec">Détails</p><div class="group"><label class="cell"><span class="sp">Groupe</span><select class="rin" id="exg">${GROUPS.map(g=>`<option ${g===exFilter?'selected':''}>${g}</option>`).join('')}</select></label>
   <label class="cell"><span class="sp">Mesure</span><select class="rin" id="ext"><option value="reps">Répétitions</option><option value="time">Durée (secondes)</option></select></label></div>`);setTimeout(()=>{const n=$('#exn');n&&n.focus()},350)}
 box.addEventListener('input',e=>{const t=e.target,gk=t.dataset.g;
-  if(cdraft&&t.dataset.c){const k=t.dataset.c;cdraft[k]=['name','ex','start','end'].includes(k)?t.value:+t.value||0;if(k==='ex')drawCh();else if((k==='weeks'||k==='start')&&cdraft.start){const e=$('#chend');if(e)e.textContent=fmtLong(dk(addD(pd(cdraft.start),7*Math.max(1,cdraft.weeks|0)-1)))}return}
+  if(cdraft&&t.dataset.c){const k=t.dataset.c;cdraft[k]=['name','ex','start','end'].includes(k)?t.value:+String(t.value).replace(',','.')||0;if(k==='ex')drawCh();else if((k==='weeks'||k==='start')&&cdraft.start){const e=$('#chend');if(e)e.textContent=fmtLong(dk(addD(pd(cdraft.start),7*Math.max(1,cdraft.weeks|0)-1)))}return}
   if(gdraft&&gk){gdraft[gk]=gk==='deload'?t.checked:(gk==='ex'||gk==='end')?t.value:+t.value||0;
     if(gk==='ex')drawGoalEditor();else{const p=$('#gprev');if(p)p.innerHTML=goalPreview()}return}
   const k=t.dataset.k;if(!draft||!k)return;
@@ -681,7 +713,7 @@ const elapsed=()=>R.acc+(R.paused?0:nowT()-R.t0);
 const curIt=()=>R.w.items[R.steps[R.i].ii];
 const curEx=()=>exById(curIt().ex)||{name:'Exercice',type:'reps'};
 
-function start(id){startW(woById(id),null)}
+function start(id){if(id==='run'){startRun();return}startW(woById(id),null)}
 function startGoal(id){const g=S.goals.find(x=>x.id===id),ex=g&&exById(g.ex);if(!ex)return;const s=goalPlan(g).sess[0]||{sets:g.tSets,reps:g.tReps};
   startW({id:'g-'+g.id,name:'Objectif · '+ex.name,items:[I(g.ex,s.sets,s.reps,0,+g.rest||0)]},g.id)}
 function startW(w,goalId){if(!w||!w.items.length){toast('Ajoute d’abord des exercices à cette séance');return}
@@ -771,6 +803,123 @@ function draw(){const run=$('#run');const key=R.phase+R.i+(R.wend?'t':'')+(R.act
     foot=`<button class="btn big w" data-act="closerun">Terminer</button>`}
   run.innerHTML=top+`<div class="rbody ${mid?'mid':''} ${anim?'enter':''}">${body}</div><div class="rfoot">${foot}</div>`+
     (R.paused?`<div class="pause"><p class="rk">En pause · ${mmss(elapsed()/1000)}</p><h2 class="rname">Pause</h2><button class="btn big" data-act="pause">${PLAY}Reprendre</button><button class="btn dk" data-act="quit">Arrêter la séance</button></div>`:'')}
+
+/* ---------- course à pied ---------- */
+const RUN_WO={id:'run',name:'Course à pied',items:[],est:30};
+const RUNI='<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="15" cy="4" r="2.2" fill="currentColor"/><path d="M7 21l3.2-5.6 3.3 2.4V22M5 11.5l3.3-3.6h5.2l3 3.6 3 .8M10.5 8l-1.3 6.8" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+const kmTxt=x=>(+x||0).toFixed(1).replace('.',',');
+const fmtKm=m=>((+m||0)/1000).toFixed(2).replace('.',',');
+const fmtPace=s=>{if(!isFinite(s)||s<=0||s>3600)return '—';s=Math.round(s);return Math.floor(s/60)+'′'+pad(s%60)+'″'};
+const fmtDur=s=>{s=Math.max(0,Math.round(+s||0));const h=Math.floor(s/3600),m=Math.floor(s%3600/60),x=s%60;return h?h+':'+pad(m)+':'+pad(x):m+':'+pad(x)};
+const hav=(a,b)=>{const R0=6371000,r=Math.PI/180,dl=(b[0]-a[0])*r,dn=(b[1]-a[1])*r,x=Math.sin(dl/2)**2+Math.cos(a[0]*r)*Math.cos(b[0]*r)*Math.sin(dn/2)**2;return 2*R0*Math.asin(Math.sqrt(x))};
+const runs=()=>S.history.filter(h=>h.run&&h.run.dist>0);
+function bestEffort(pts,D){let best=0,i=0;for(let j=1;j<pts.length;j++){while(i+1<j&&pts[j][4]-pts[i+1][4]>=D)i++;const dd=pts[j][4]-pts[i][4];if(dd>=D){const t=(pts[j][2]-pts[i][2])*D/dd;if(t>0&&(!best||t<best))best=t}}return best}
+function effortOf(h,D){const r=h.run;if(!r||r.dist<D||!r.time)return 0;if(r.pts&&r.pts.length>2){const b=bestEffort(r.pts,D);if(b)return b}return r.time*D/r.dist}
+function elevGain(pts){const a=(pts||[]).filter(p=>p[3]!=null).map(p=>p[3]);if(a.length<5)return null;const s=a.map((_,i)=>{const w=a.slice(Math.max(0,i-2),i+3);return w.reduce((x,y)=>x+y,0)/w.length});let up=0,base=s[0];for(const v of s){if(v-base>=3){up+=v-base;base=v}else if(base-v>=3)base=v}return Math.round(up)}
+function svgTrace(pts){if(!pts||pts.length<2)return '<div class="empty" style="padding:70px 16px"><p>Pas de tracé GPS pour cette course.</p></div>';
+  const k=Math.cos(pts[0][0]*Math.PI/180),xs=pts.map(p=>p[1]*k),ys=pts.map(p=>-p[0]);
+  let mnx=Infinity,mxx=-Infinity,mny=Infinity,mxy=-Infinity;xs.forEach(v=>{if(v<mnx)mnx=v;if(v>mxx)mxx=v});ys.forEach(v=>{if(v<mny)mny=v;if(v>mxy)mxy=v});
+  const W=300,H=200,P=16,s=Math.min((W-2*P)/((mxx-mnx)||1e-9),(H-2*P)/((mxy-mny)||1e-9)),ox=(W-(mxx-mnx)*s)/2,oy=(H-(mxy-mny)*s)/2;
+  const pt=i=>[(ox+(xs[i]-mnx)*s).toFixed(1),(oy+(ys[i]-mny)*s).toFixed(1)];
+  const d=pts.map((_,i)=>(i?'L':'M')+pt(i).join(',')).join(''),a=pt(0),b=pt(pts.length-1);
+  return `<svg viewBox="0 0 ${W} ${H}" class="trace" role="img" aria-label="Tracé du parcours"><path d="${d}" fill="none" stroke="#ff4f3f" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/><circle cx="${a[0]}" cy="${a[1]}" r="5.5" fill="#34c759" stroke="#fff" stroke-width="2"/><circle cx="${b[0]}" cy="${b[1]}" r="5.5" fill="#ff3b30" stroke="#fff" stroke-width="2"/></svg>`}
+function elevSvg(pts){const a=pts.filter(p=>p[3]!=null);if(a.length<5)return '';const mn=Math.min(...a.map(p=>p[3])),mx=Math.max(...a.map(p=>p[3])),D=a[a.length-1][4]||1,rg=(mx-mn)||1;
+  const P=a.map(p=>[(p[4]/D*300).toFixed(1),(8+(1-(p[3]-mn)/rg)*64).toFixed(1)]);const line=P.map((q,i)=>(i?'L':'M')+q.join(',')).join('');
+  return `<svg viewBox="0 0 300 80" preserveAspectRatio="none" aria-label="Profil d’altitude"><path d="${line}L300,80L0,80Z" fill="rgba(255,79,63,.22)"/><path d="${line}" fill="none" stroke="#ff4f3f" stroke-width="2" vector-effect="non-scaling-stroke"/></svg><div class="row" style="justify-content:space-between;font-size:13px;opacity:.65;margin-top:4px"><span>min ${Math.round(mn)} m</span><span>max ${Math.round(mx)} m</span></div>`}
+let LP=null;
+function leaflet(){if(window.L)return Promise.resolve(window.L);if(LP)return LP;
+  LP=new Promise((ok,ko)=>{const l=document.createElement('link');l.rel='stylesheet';l.href='https://unpkg.com/leaflet@1.9.4/dist/leaflet.css';document.head.appendChild(l);
+    const s=document.createElement('script');s.src='https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';s.onload=()=>ok(window.L);s.onerror=ko;document.head.appendChild(s);setTimeout(()=>ko(new Error('timeout')),9000)}).catch(e=>{LP=null;throw e});return LP}
+function mountMap(el,pts){if(!el||!pts||pts.length<2)return;
+  leaflet().then(L=>{if(!el.isConnected||!L)return;el.innerHTML='';const m=L.map(el,{zoomControl:false,scrollWheelZoom:false,attributionControl:true});
+    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'© OpenStreetMap'}).addTo(m);
+    const ll=pts.map(p=>[p[0],p[1]]),line=L.polyline(ll,{color:'#ff4f3f',weight:5,opacity:.95}).addTo(m);
+    L.circleMarker(ll[0],{radius:7,color:'#fff',weight:2,fillColor:'#34c759',fillOpacity:1}).addTo(m);L.circleMarker(ll[ll.length-1],{radius:7,color:'#fff',weight:2,fillColor:'#ff3b30',fillOpacity:1}).addTo(m);
+    m.fitBounds(line.getBounds(),{padding:[24,24]});setTimeout(()=>m.invalidateSize(),250)}).catch(()=>{})}
+function runPRs(h){const prev=runs().filter(x=>x!==h),out=[],r=h.run;if(!prev.length)return out;
+  if(r.dist>Math.max(...prev.map(x=>x.run.dist)))out.push('Plus longue sortie');
+  [[1000,'1 km'],[5000,'5 km'],[10000,'10 km'],[21097,'semi']].forEach(([D,l])=>{const e=effortOf(h,D);if(!e)return;const pb=Math.min(...prev.map(x=>effortOf(x,D)).filter(Boolean));if(!isFinite(pb)||e<pb-0.5)out.push('Record '+l+' : '+fmtDur(e))});return out}
+function runDetail(h,prs){const r=h.run,pace=r.dist?r.time/(r.dist/1000):0,sp=r.splits||[],up=elevGain(r.pts),bk=sp.length?Math.min(...sp):0,wk=sp.length?Math.max(...sp):0;
+  const partD=r.dist-sp.length*1000,partT=r.time-sp.reduce((a,b)=>a+b,0);
+  const tiles=[['Distance',fmtKm(r.dist),'km'],['Durée',fmtDur(r.time),''],['Allure moy.',fmtPace(pace),'/km'],['Vitesse moy.',r.time?(r.dist/r.time*3.6).toFixed(1).replace('.',','):'—','km/h']]
+    .concat(bk?[['Meilleur km',fmtPace(bk),'']]:[]).concat(up!=null?[['Dénivelé +',up,'m']]:[]);
+  const splits=sp.map((s,i)=>`<div class="split"><span>Km ${i+1}</span><span class="bar"><i class="${s===bk&&sp.length>1?'best':''}" style="width:${wk===bk?100:Math.round(55+45*(wk-s)/(wk-bk))}%"></i></span><b class="num">${fmtPace(s)}</b></div>`).join('')
+    +(sp.length&&partD>=50&&partT>0?`<div class="split"><span>+${fmtKm(partD)}</span><span class="bar"><i style="width:45%;opacity:.45"></i></span><b class="num">${fmtPace(partT/(partD/1000))}</b></div>`:'');
+  return `<div class="rmap" id="rmap">${svgTrace(r.pts)}</div>${prs&&prs.length?`<div class="prs">${prs.map(n=>`<span class="pr">★ ${esc(n)}</span>`).join('')}</div>`:''}
+  <div class="rstats">${tiles.map(t=>`<div><span>${t[0]}</span><b class="num">${t[1]}<small>${t[2]}</small></b></div>`).join('')}</div>
+  ${splits?`<p class="rsec">Allure par kilomètre</p><div class="splits">${splits}</div>`:''}
+  ${up!=null?`<p class="rsec">Profil d’altitude · +${up} m</p><div class="elev">${elevSvg(r.pts)}</div>`:''}
+  ${r.manual?'<p class="rsec">Course saisie à la main, sans tracé GPS.</p>':''}`}
+function runView(id){const h=S.history.find(x=>x.id===id);if(!h||!h.run)return;
+  openSheet(`<div class="grab"></div><div class="sh"><button class="lnk" data-act="close">Fermer</button><b>${esc(cap(pd(h.date).toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long'})))}</b><span></span></div><div class="rdet">${runDetail(h)}
+  <div class="group" style="margin-top:20px"><button class="cell" data-act="delh" data-id="${esc(h.id)}" style="color:var(--danger);justify-content:center">Supprimer cette course</button></div></div>`);mountMap($('#rmap'),h.run.pts)}
+const runRowH=h=>`<button class="cell" data-act="runview" data-id="${esc(h.id)}"><span class="runic">${RUNI}</span><span class="sp">Course à pied<span class="sub">${esc(fmtDate(h.date))} · ${fmtKm(h.run.dist)} km · ${fmtDur(h.run.time)} · ${fmtPace(h.run.time/(h.run.dist/1000))}/km</span></span><span class="chev"></span></button>`;
+const runStartRow=()=>`<div class="cell"><span class="runic">${RUNI}</span><span class="sp">Course à pied<span class="sub">Suivi GPS · distance, allure, parcours</span></span><button class="play" data-act="start" data-id="run" aria-label="Démarrer une course">${PLAY}</button></div>`;
+function runSec(){const rs=runs();if(!rs.length)return '';const now=new Date(),month=dk(now).slice(0,7),rm=rs.filter(h=>h.date.startsWith(month)),km=rm.reduce((t,h)=>t+h.run.dist,0),mon=monday(now);
+  const wk=[...Array(8)].map((_,i)=>{const s=addD(mon,-7*(7-i)),e=addD(s,7);return{l:s.getDate()+'/'+(s.getMonth()+1),v:rs.filter(h=>h.date>=dk(s)&&h.date<dk(e)).reduce((t,h)=>t+h.run.dist,0)}}),mx=Math.max(1,...wk.map(w=>w.v));
+  const rec=[[1000,'1 km'],[5000,'5 km'],[10000,'10 km'],[21097,'semi-marathon']].map(([D,l])=>{const b=Math.min(...rs.map(h=>effortOf(h,D)).filter(Boolean));return isFinite(b)?`<div class="cell"><span class="sp">Meilleur ${l}</span><b class="num">${fmtDur(b)}</b><span class="val num" style="margin-left:6px">${fmtPace(b/(D/1000))}/km</span></div>`:''}).join('');
+  return `<p class="sec">Course à pied</p><div class="group tiles"><div><b class="num">${fmtKm(km)}</b><span>km ce mois</span></div><div><b class="num">${rm.length}</b><span>sortie${rm.length>1?'s':''} ce mois</span></div><div><b class="num">${fmtKm(Math.max(...rs.map(h=>h.run.dist)))}</b><span>km, plus longue</span></div></div>
+  <div class="group" style="margin-top:12px"><div class="bars">${wk.map(w=>`<div><span class="num">${w.v?kmTxt(w.v/1000):''}</span><i class="${w.v?'':'zero'}" style="height:${w.v/mx*80}%"></i>${w.l}</div>`).join('')}</div></div>
+  ${rec?`<p class="sec">Records</p><div class="group">${rec}</div>`:''}`}
+
+let RN=null,geoId=null,traceT=0;
+const mvT=()=>RN.moving+(RN.phase==='run'&&!RN.paused?(Date.now()-RN.mt0)/1000:0);
+function startRun(){if(!navigator.geolocation){toast('GPS indisponible sur cet appareil');return}if(R){toast('Termine d’abord la séance en cours');return}
+  if(!$('#sheet').hidden)closeSheet();audio();
+  RN={phase:'gps',pts:[],dist:0,acc:null,fix:false,moving:0,mt0:0,paused:false,splits:[],lastSplitT:0,startTs:Date.now(),cend:0,lastSec:9,err:null,key:''};
+  $('#run').hidden=false;document.body.style.overflow='hidden';
+  try{geoId=navigator.geolocation.watchPosition(onGeo,onGeoErr,{enableHighAccuracy:true,maximumAge:0,timeout:20000})}catch(e){RN.err='Accès à la position impossible ici.'}
+  drawRN();cancelAnimationFrame(raf);raf=requestAnimationFrame(rnFrame)}
+function onGeoErr(e){if(!RN)return;RN.err=e&&e.code===1?'Position refusée : autorise la localisation pour Safari (Réglages › Confidentialité › Service de localisation).':'Signal GPS faible, patiente à découvert…';updRN()}
+function onGeo(p){if(!RN)return;const c=p.coords;RN.acc=c.accuracy;RN.fix=true;RN.err=null;
+  if(RN.phase!=='run'||RN.paused||c.accuracy>40){updRN();return}
+  const t=mvT(),pt=[c.latitude,c.longitude,t,c.altitude!=null&&isFinite(c.altitude)?Math.round(c.altitude*10)/10:null,0],last=RN.pts[RN.pts.length-1];
+  if(last){const d=hav(last,pt),dt=t-last[2];if(d<4||(dt>0&&d/dt>9)){updRN();return}RN.dist+=d}
+  pt[4]=Math.round(RN.dist);RN.pts.push(pt);
+  while(RN.dist>=(RN.splits.length+1)*1000){const target=(RN.splits.length+1)*1000,a=last||pt,f=a===pt?1:(target-a[4])/((pt[4]-a[4])||1),tk=a[2]+(pt[2]-a[2])*Math.max(0,Math.min(1,f)),sp=tk-RN.lastSplitT;
+    RN.splits.push(Math.round(sp));RN.lastSplitT=tk;beep('go');vib([60,40,60]);
+    say(`${RN.splits.length} kilomètre${RN.splits.length>1?'s':''}. Allure ${Math.floor(sp/60)} minutes ${Math.round(sp%60)}.`)}
+  updRN()}
+function curPace(){const n=RN.pts.length;if(n<2)return 0;const last=RN.pts[n-1];if(mvT()-last[2]>15)return 0;let i=n-1;while(i>0&&last[2]-RN.pts[i-1][2]<=30)i--;const a=RN.pts[i],dd=last[4]-a[4],dt=last[2]-a[2];return dd>15&&dt>0?dt/(dd/1000):0}
+function updRN(){if(!RN)return;const set=(id,v)=>{const e=$('#'+id);if(e)e.textContent=v};
+  set('rndist',fmtKm(RN.dist));set('rnavg',RN.dist>50?fmtPace(mvT()/(RN.dist/1000)):'—');set('rncur',fmtPace(curPace()));set('rnsplits',RN.splits.length);
+  const g=$('#rngps');if(g){g.textContent=RN.err&&!RN.fix?'GPS indisponible':RN.acc==null?'Recherche du GPS…':'GPS ± '+Math.round(RN.acc)+' m';g.className='gps '+(RN.acc!=null&&RN.acc<=20?'ok':RN.acc!=null&&RN.acc<=40?'mid':'bad')}
+  const er=$('#rnerr');if(er){er.textContent=RN.err||'';er.hidden=!RN.err}
+  const now=Date.now();if(now-traceT>3000&&RN.pts.length>1){traceT=now;const m=$('#rnmap');if(m)m.innerHTML=svgTrace(RN.pts)}}
+function rnBegin(){audio();lockOn();RN.phase='count';RN.cend=Date.now()+3000;RN.lastSec=4;drawRN()}
+function rnFrame(){if(!RN)return;raf=requestAnimationFrame(rnFrame);const t=Date.now();
+  if(RN.phase==='count'){const left=(RN.cend-t)/1000,sec=Math.ceil(left);
+    if(sec!==RN.lastSec&&sec>0){RN.lastSec=sec;beep('tick');vib(20);const n=$('#cnt');if(n){n.textContent=sec;n.classList.remove('pop');void n.offsetWidth;n.classList.add('pop')}}
+    if(left<=0){beep('go');vib(80);say('C’est parti !');RN.phase='run';RN.mt0=Date.now();RN.moving=0;drawRN()}}
+  else if(RN.phase==='run'){const e=$('#rntime');if(e)e.textContent=fmtDur(mvT())}}
+function rnPause(){if(!RN||RN.phase!=='run')return;if(RN.paused){RN.mt0=Date.now();RN.paused=false;say('Reprise')}else{RN.moving+=(Date.now()-RN.mt0)/1000;RN.paused=true;say('Pause')}vib(40);drawRN()}
+function rnStopAsk(){if(!RN)return;if(RN.phase==='gps'||RN.phase==='done'||RN.phase==='count'){rnClose();return}if(!RN.paused)rnPause();
+  actionSheet('Terminer la course ?',RN.dist<50?'Moins de 50 m parcourus : rien ne sera enregistré.':fmtKm(RN.dist)+' km en '+fmtDur(mvT())+'.',[{label:'Terminer et enregistrer',b:1,fn:rnFinish},{label:'Abandonner sans enregistrer',d:1,fn:rnClose}])}
+function stopGeo(){if(geoId!=null){try{navigator.geolocation.clearWatch(geoId)}catch(e){}geoId=null}}
+function rnFinish(){if(!RN)return;const t=mvT();RN.moving=t;RN.paused=true;stopGeo();
+  if(RN.dist<50){toast('Course trop courte : rien n’a été enregistré');rnClose();return}
+  const h={id:'h'+nid(),date:dk(new Date(RN.startTs)),ts:Date.now(),type:'run',workoutId:'run',name:'Course à pied',dur:Math.max(1,Math.round(t/60)),entries:[],
+    run:{dist:Math.round(RN.dist),time:Math.round(t),pts:RN.pts.map(p=>[+p[0].toFixed(5),+p[1].toFixed(5),Math.round(p[2]),p[3],p[4]]),splits:RN.splits.slice(),start:RN.startTs}};
+  const prs=runPRs(h);S.history.unshift(h);save([h.date.slice(0,7)]);chSyncAll();RN.saved=h;RN.prs=prs;RN.phase='done';beep('done');vib([80,60,160]);
+  say(`Course terminée. ${fmtKm(h.run.dist).replace(',',' virgule ')} kilomètres en ${Math.round(t/60)} minutes.`);drawRN()}
+function rnClose(){stopGeo();cancelAnimationFrame(raf);lockOff();try{speechSynthesis.cancel()}catch(e){}RN=null;$('#run').hidden=true;$('#run').innerHTML='';document.body.style.overflow='';render()}
+function drawRN(){const run=$('#run'),anim=RN.key!==RN.phase;RN.key=RN.phase;
+  const top=`<div class="rtop"><button class="rbtn" data-act="rnstop" aria-label="${RN.phase==='run'?'Terminer':'Fermer'}">${SVGX}</button><span class="rel"><span id="rngps" class="gps">Recherche du GPS…</span></span><button class="rbtn" data-act="sound" aria-label="${sound?'Couper le son':'Activer le son'}">${svgS(sound)}</button></div>`;
+  let body='',foot='',mid=false;
+  if(RN.phase==='gps'){mid=true;body=`<div class="runbadge">${RUNI}</div><h1 class="rname">Course à pied</h1><p class="rk">Attends que le GPS indique moins de 20 m pour un tracé précis.</p><p class="rk" id="rnerr" style="color:#ff6961" hidden></p>
+    <div class="rpill" style="text-align:left">Garde l’écran allumé et Cadence au premier plan : si tu verrouilles l’iPhone, la position n’est plus suivie et le trajet manquant est compté en ligne droite.</div>`;
+    foot=`<button class="btn big w" data-act="rngo">${PLAY}Démarrer la course</button>`}
+  else if(RN.phase==='count'){mid=true;body=`<p class="rk">Prépare-toi</p><div class="rbig num pop" id="cnt">3</div>`}
+  else if(RN.phase==='run'){body=`<p class="rk">${RN.paused?'<b style="color:var(--yellow)">En pause</b>':'Distance'}</p><div class="rbig num" style="font-size:clamp(80px,27vw,140px)"><span id="rndist">${fmtKm(RN.dist)}</span><small>km</small></div>
+    <div class="rgrid"><div><span class="rk">Durée</span><b class="num" id="rntime">${fmtDur(mvT())}</b></div><div><span class="rk">Allure moyenne</span><b class="num" id="rnavg">—</b></div><div><span class="rk">Allure actuelle</span><b class="num" id="rncur">—</b></div><div><span class="rk">Km bouclés</span><b class="num" id="rnsplits">${RN.splits.length}</b></div></div>
+    <div class="rnmap" id="rnmap">${RN.pts.length>1?svgTrace(RN.pts):'<p class="rk" style="text-align:center;padding-top:70px">Le tracé apparaît dès les premiers mètres.</p>'}</div>`;
+    foot=`<div class="row" style="flex-wrap:nowrap">${RN.paused?`<button class="btn big sp" data-act="rnpause">${PLAY}Reprendre</button><button class="btn big dk sp" data-act="rnstop">Terminer</button>`:`<button class="btn big y w" data-act="rnpause">Pause</button>`}</div>`}
+  else{const h=RN.saved;body=`<p class="rk">${esc(fmtDate(h.date))} · course enregistrée</p><h1 class="rname">Bien couru !</h1>${runDetail(h,RN.prs)}`;foot=`<button class="btn big w" data-act="rnstop">Terminer</button>`}
+  traceT=0;run.innerHTML=top+`<div class="rbody ${mid?'mid':''} ${anim?'enter':''}">${body}</div><div class="rfoot">${foot}</div>`;updRN();if(RN.phase==='done')mountMap($('#rmap'),RN.saved.run.pts)}
+function chSaveRun(){const c=chById(window.__qa),km=parseFloat(String($('#qkm').value).replace(',','.')),mn=+$('#qmin').value||0,sc=+$('#qsec').value||0,d=$('#qdate').value,time=mn*60+sc;
+  if(!(km>0)||!(time>0)){toast('Indique la distance et la durée');return}if(c&&(!d||d<c.start||d>c.end||d>dk(new Date()))){toast('La date doit être dans la période du défi');return}
+  const h={id:'h'+nid(),date:d,ts:Date.now(),type:'run',workoutId:'run',name:'Course à pied',dur:Math.max(1,Math.round(time/60)),entries:[],run:{dist:Math.round(km*1000),time,pts:[],splits:[],manual:true}};
+  S.history.push(h);S.history.sort((a,b)=>b.ts-a.ts);save([d.slice(0,7)]);chSyncAll();toast('Course ajoutée : '+fmtKm(h.run.dist)+' km');if(c)chOpen(c.code);else{closeSheet();render()}}
 
 /* ---------- commandes vocales ---------- */
 let dict=null,rec=null,micOn=false,micWant=false,lastCmd=0,seen='';
@@ -870,11 +1019,17 @@ document.addEventListener('click',e=>{const b=e.target.closest('[data-act]');if(
   else if(a==='stp'){const f=b.dataset.f,st=f==='load'?.5:1;R.cur[f]=Math.max(0,Math.round(((+R.cur[f]||0)+st*+b.dataset.d)*2)/2);const inp=$('#st-'+f);if(inp)inp.value=R.cur[f];vib(10)}
   else if(a==='addload'){R.showLoad=true;draw()}
   else if(a==='pause')togglePause();
-  else if(a==='sound'){sound=!sound;try{localStorage.setItem('cadence-sound',sound?'1':'0')}catch(e){}if(!sound)try{speechSynthesis.cancel()}catch(e){}else audio();draw()}
+  else if(a==='sound'){sound=!sound;try{localStorage.setItem('cadence-sound',sound?'1':'0')}catch(e){}if(!sound)try{speechSynthesis.cancel()}catch(e){}else audio();RN?drawRN():draw()}
   else if(a==='quit'){if(!R)return;if(R.phase==='intro'||R.phase==='done'){closeRun();return}
     if(!R.paused)togglePause();
     actionSheet('Arrêter la séance ?','Tu peux garder les séries déjà validées.',[{label:'Terminer et enregistrer',b:1,fn:()=>finish()},{label:'Abandonner sans enregistrer',d:1,fn:()=>closeRun()}])}
   else if(a==='closerun')closeRun();
+  else if(a==='rngo')rnBegin();
+  else if(a==='rnpause')rnPause();
+  else if(a==='rnstop')rnStopAsk();
+  else if(a==='runview')runView(id);
+  else if(a==='chsaverun')chSaveRun();
+  else if(a==='cdsport'){cdraft.sport=b.dataset.s;if(cdraft.sport!=='run'&&cdraft.type==='fastest')cdraft.type='weekly';cdraft.target=cdraft.sport==='run'?20:200;drawCh()}
   else if(a==='go2')location.hash=b.dataset.h;
   else if(a==='newch'){if(!FB_CONFIG){toast('Les défis ne sont pas encore activés');return}if(!S.exercises.length){toast('Ajoute d’abord un exercice');return}newCh()}
   else if(a==='cdtype'){cdraft.type=b.dataset.t;drawCh()}
@@ -905,7 +1060,7 @@ document.addEventListener('change',e=>{const t=e.target,a=t.dataset.act;
   else if(a==='progex'){progEx=t.value;drawChart()}});
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('#sheet').hidden)closeSheet();
   else if(R&&$('#sheet').hidden&&e.key===' '&&e.target.tagName!=='INPUT'){e.preventDefault();if(R.phase==='work')validSet();else if(R.phase==='rest')next();else if(R.phase==='intro')begin()}});
-document.addEventListener('visibilitychange',()=>{if(R&&!document.hidden&&R.phase!=='done'&&R.phase!=='intro')lockOn()});
+document.addEventListener('visibilitychange',()=>{if(RN&&!document.hidden&&RN.phase==='run')lockOn();if(R&&!document.hidden&&R.phase!=='done'&&R.phase!=='intro')lockOn()});
 addEventListener('hashchange',route);
 route();setSync('local');connect();
 if('serviceWorker' in navigator&&location.protocol==='https:'&&!window.claude){try{navigator.serviceWorker.register('sw.js').catch(()=>{})}catch(e){}}
