@@ -140,6 +140,28 @@ details[open] .chev{transform:rotate(135deg)}
 .asg>.asb:first-child{box-shadow:none}
 .asb.d{color:var(--danger)}.asb.b{font-weight:600}
 .asb:active{background:var(--fill)}
+.trophy{width:64px;height:64px;margin:0 auto;border-radius:50%;display:grid;place-items:center;background:linear-gradient(140deg,#ffd60a,#ff9f0a);color:#fff;box-shadow:0 8px 20px -8px rgba(255,159,10,.7)}
+.trophy svg{width:34px;height:34px;fill:currentColor}
+.trophy.sm{width:34px;height:34px;margin:0;flex:none;box-shadow:none}.trophy.sm svg{width:18px;height:18px}
+.trophy.soon{background:linear-gradient(140deg,#64d2ff,#0a84ff)}.trophy.end{background:linear-gradient(140deg,#c7c7cc,#8e8e93)}
+.podium{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));align-items:end;gap:8px;padding:18px 14px 0;background:linear-gradient(180deg,var(--tintbg),transparent 70%)}
+.pcol{display:flex;flex-direction:column;align-items:center;text-align:center;gap:3px;position:relative}
+.av{width:52px;height:52px;border-radius:50%;display:grid;place-items:center;color:#fff;font-weight:700;font-size:20px;flex:none;box-shadow:0 0 0 3px var(--cell)}
+.av.sm{width:32px;height:32px;font-size:14px;box-shadow:none}
+.p1 .av{width:66px;height:66px;font-size:26px;box-shadow:0 0 0 3px var(--cell),0 0 0 6px #ffd60a}
+.p2 .av{box-shadow:0 0 0 3px var(--cell),0 0 0 5px #c7c7cc}.p3 .av{box-shadow:0 0 0 3px var(--cell),0 0 0 5px #d39060}
+.pn{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:15px;margin-top:6px}
+.ps{font-size:15px;color:var(--mute);font-weight:600;white-space:nowrap}.p1 .ps{color:var(--tint);font-size:17px}
+.pb{width:100%;margin-top:6px;border-radius:12px 12px 0 0;display:grid;place-items:start center;padding-top:8px;font:800 28px ui-rounded,-apple-system,system-ui,sans-serif;color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.2)}
+.p1 .pb{height:112px;background:linear-gradient(#ffd60a,#e5a400)}.p2 .pb{height:82px;background:linear-gradient(#d8d8dd,#a5a5aa)}.p3 .pb{height:62px;background:linear-gradient(#e6a36c,#b8733f)}
+.crown{position:absolute;top:-22px;width:30px;height:30px;fill:#ffd60a;filter:drop-shadow(0 2px 3px rgba(0,0,0,.2))}
+.wk{display:grid;grid-template-columns:repeat(auto-fill,minmax(64px,1fr));gap:8px}
+.wk>div{background:var(--fill);border-radius:12px;padding:8px 10px;position:relative;overflow:hidden}
+.wk>div b{display:block;font-size:20px}.wk>div i{position:absolute;left:0;bottom:0;height:4px;background:var(--tint)}
+.wk>div.ok{background:rgba(52,199,89,.16)}.wk>div.ok i{background:#34c759}.wk>div.now{box-shadow:inset 0 0 0 2px var(--tint)}
+.qadd{display:grid;grid-template-columns:48px 48px minmax(0,1fr) 48px 48px;gap:6px;width:100%;align-items:center}
+.qadd button{height:48px;border:0;border-radius:12px;background:var(--fill);font-weight:600;font-size:16px}
+.qadd input{border:0;background:transparent;text-align:center;font-size:36px;font-weight:700;width:100%;outline:none}
 .toast{position:fixed;top:calc(10px + env(safe-area-inset-top));left:50%;transform:translateX(-50%);background:var(--bar);-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px);color:var(--ink);padding:11px 20px;border-radius:99px;box-shadow:0 10px 30px rgba(0,0,0,.18);z-index:60;font-weight:600;font-size:15px;animation:drop .35s cubic-bezier(.2,.9,.25,1);white-space:nowrap}
 /* séance immersive */
 .run{position:fixed;inset:0;z-index:20;background:#000;color:#fff;display:flex;flex-direction:column;padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom);color-scheme:dark}
@@ -200,9 +222,9 @@ details[open] .chev{transform:rotate(135deg)}
 <nav class="tabs" aria-label="Navigation">
   <a href="#aujourdhui" data-tab="aujourdhui"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>Aujourd’hui</a>
   <a href="#objectifs" data-tab="objectifs"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.2"/></svg>Objectifs</a>
+  <a href="#defis" data-tab="defis"><svg viewBox="0 0 24 24"><path d="M8 4h8v5a4 4 0 01-8 0zM8 6H5v1a3 3 0 003 3M16 6h3v1a3 3 0 01-3 3M12 13v4M8 20h8M9.5 17h5"/></svg>Défis</a>
   <a href="#planning" data-tab="planning"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>Planning</a>
   <a href="#seances" data-tab="seances"><svg viewBox="0 0 24 24"><path d="M6.5 7v10M17.5 7v10M3.5 9.5v5M20.5 9.5v5M6.5 12h11"/></svg>Séances</a>
-  <a href="#exercices" data-tab="exercices"><svg viewBox="0 0 24 24"><path d="M8 6h12M8 12h12M8 18h12"/><circle cx="4" cy="6" r=".8"/><circle cx="4" cy="12" r=".8"/><circle cx="4" cy="18" r=".8"/></svg>Exercices</a>
   <a href="#historique" data-tab="historique"><svg viewBox="0 0 24 24"><path d="M4 19l5-6 4 3 7-9"/><path d="M15 7h5v5"/></svg>Progrès</a>
 </nav>
 <div id="sheet" class="sheet" hidden><div class="box" id="sheetBox" role="dialog" aria-modal="true"></div></div>
@@ -228,6 +250,8 @@ const cap=s=>s.charAt(0).toUpperCase()+s.slice(1);
 const mmss=s=>{s=Math.max(0,Math.ceil(s));return Math.floor(s/60)+':'+pad(s%60)};
 const r1=x=>Math.round(x*10)/10;
 const PLAY='<svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><path d="M8 5.2v13.6L19 12z" fill="currentColor"/></svg>';
+const TROPHY='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3h10v2h3v2a4 4 0 01-4 4h-.3A5 5 0 0113 13.9V17h3v3H8v-3h3v-3.1A5 5 0 018.3 11H8a4 4 0 01-4-4V5h3zm0 4H6a2 2 0 002 2zm10 0v2a2 2 0 002-2z"/></svg>';
+const CROWN='<svg class="crown" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7l4.5 4L12 4l4.5 7L21 7l-2 11H5z"/></svg>';
 const PLUS='<svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>';
 
 const E=(id,name,group,type='reps')=>({id,name,group,type});
@@ -246,7 +270,7 @@ const DEF={
 let S=null;
 try{S=JSON.parse(localStorage.getItem('cadence-v1'))}catch(e){}
 if(!S||!Array.isArray(S.exercises))S=JSON.parse(JSON.stringify(DEF));
-const norm=()=>{S.plan=S.plan||{};for(let i=0;i<7;i++)if(!Array.isArray(S.plan[i]))S.plan[i]=[];S.workouts=S.workouts||[];S.goals=S.goals||[];S.history=(S.history||[]).sort((a,b)=>b.ts-a.ts)};
+const norm=()=>{S.plan=S.plan||{};for(let i=0;i<7;i++)if(!Array.isArray(S.plan[i]))S.plan[i]=[];S.workouts=S.workouts||[];S.goals=S.goals||[];S.challenges=S.challenges||[];S.history=(S.history||[]).sort((a,b)=>b.ts-a.ts)};
 norm();
 const exById=id=>S.exercises.find(e=>e.id===id);
 const woById=id=>S.workouts.find(w=>w.id===id);
@@ -261,7 +285,7 @@ function save(months){dirty.add('config');(months||[]).forEach(m=>dirty.add('h-'
 async function flush(){if(!db||!me||flushing)return;flushing=true;
   const col=db.collection('data/users/'+me),keys=[...dirty];dirty.clear();
   try{for(const k of keys){
-      if(k==='config')await col.doc('config').set({exercises:S.exercises,workouts:S.workouts,plan:S.plan,goals:S.goals,v:1});
+      if(k==='config')await col.doc('config').set({exercises:S.exercises,workouts:S.workouts,plan:S.plan,goals:S.goals,challenges:S.challenges,pseudo:S.pseudo||'',v:1});
       else{const m=k.slice(2),l=S.history.filter(h=>h.date.startsWith(m));
         if(l.length)await col.doc(k).set({sessions:l});else await col.doc(k).delete()}}
     setSync('ok')}
@@ -277,7 +301,7 @@ async function connect(){
     const snap=await d.collection('data/users/'+id).get();clearTimeout(slow);
     let cfg=null;const hist=[];
     snap.docs.forEach(doc=>{const v=doc.data()||{};if(doc.id==='config')cfg=v;else if(doc.id.startsWith('h-')&&Array.isArray(v.sessions))hist.push(...v.sessions)});
-    if(cfg&&Array.isArray(cfg.exercises)){S={exercises:cfg.exercises,workouts:cfg.workouts||[],plan:cfg.plan||{},goals:cfg.goals||[],history:hist};norm();
+    if(cfg&&Array.isArray(cfg.exercises)){S={exercises:cfg.exercises,workouts:cfg.workouts||[],plan:cfg.plan||{},goals:cfg.goals||[],challenges:cfg.challenges||[],pseudo:cfg.pseudo||'',history:hist};norm();
       try{localStorage.setItem('cadence-v1',JSON.stringify(S))}catch(e){}
       if($('#run').hidden&&$('#sheet').hidden)render();setSync('ok')}
     else{save([...new Set(S.history.map(h=>h.date.slice(0,7)))]);setSync('ok')}}
@@ -345,7 +369,8 @@ function vToday(){
     <div class="stack">${feats||`<div class="group"><div class="empty"><h2>Jour de repos</h2><p>Rien de prévu aujourd’hui. Récupère, ou lance une séance ci-dessous si l’envie te prend.</p></div></div>`}</div>
     <p class="sec">Cette semaine · ${wk} séance${wk>1?'s':''} faite${wk>1?'s':''}</p>${strip}
   </div><div>
-    ${last?`<p class="sec">Dernière séance</p><div class="group"><a class="cell" href="#historique"><span class="sp">${esc(last.name)}<span class="sub">${esc(fmtDate(last.date))} · ${last.dur} min · ${last.entries.reduce((t,e)=>t+e.sets.length,0)} séries</span></span><span class="chev"></span></a></div>`:''}
+    ${last?`<p class="sec">Dernière séance</p><div class="group"><a class="cell" href="#historique"><span class="sp">${esc(last.name)}<span class="sub">${esc(fmtDate(last.date))} · ${last.dur?last.dur+' min':'ajout rapide'} · ${last.entries.reduce((t,e)=>t+e.sets.length,0)} séries</span></span><span class="chev"></span></a></div>`:''}
+    ${FB_CONFIG&&S.challenges.some(c=>chStatus(c).k==='live')?`<p class="sec">Défis en cours</p><div class="group">${S.challenges.filter(c=>chStatus(c).k==='live').map(c=>{const r=chRanks[c.code];return `<button class="cell" data-act="chopen" data-id="${esc(c.code)}"><span class="trophy sm">${TROPHY}</span><span class="sp">${esc(c.name)}<span class="sub">${esc(chStatus(c).txt)}</span></span>${r?`<span class="val num">${r.rank}<sup>${r.rank===1?'er':'e'}</sup>/${r.n}</span>`:''}<span class="chev"></span></button>`}).join('')}</div>`:''}
     ${others.length?`<p class="sec">Lancer une autre séance</p><div class="group">${others.map(w=>`<div class="cell"><span class="sp">${esc(w.name)}<span class="sub">≈ ${estMin(w)} min · ${w.items.length} exercices</span></span><button class="play" data-act="start" data-id="${esc(w.id)}" aria-label="Démarrer ${esc(w.name)}">${PLAY}</button></div>`).join('')}</div>`:''}
   </div></div>`}
 
@@ -386,7 +411,7 @@ function vPlan(){
       <label class="cell" style="color:var(--tint)">${PLUS.replace('26','22').replace('26','22')}<span class="sp">Ajouter une séance</span><select data-act="plan-add" data-d="${i}" aria-label="Ajouter une séance le ${DAYS[i]}" style="position:absolute;inset:0;opacity:0;width:100%;cursor:pointer"><option value="">Choisir…</option>${opts}</select></label></div>`}).join('')+'</div>').join('')+`</div>`}
 
 function vWorkouts(){
-  return lt('Séances',S.workouts.length+' séance'+(S.workouts.length>1?'s':'')+' · touche pour modifier')+(S.workouts.length?
+  return lt('Séances',S.workouts.length+' séance'+(S.workouts.length>1?'s':'')+' · touche pour modifier')+`<div class="seg" role="tablist"><button role="tab" data-act="go2" data-h="seances" class="${cur==='seances'?'on':''}">Mes séances</button><button role="tab" data-act="go2" data-h="exercices" class="${cur==='exercices'?'on':''}">Exercices</button></div>`+(S.workouts.length?
   `<div class="group">${S.workouts.map(w=>{const days=DAYS.filter((_,i)=>S.plan[i].includes(w.id)).map(d=>d.slice(0,3));
     return `<div class="cell"><button class="cellbtn" data-act="editwo" data-id="${esc(w.id)}"><b style="font-weight:600">${esc(w.name)}</b><span class="sub">${w.items.length} exercices · ≈ ${estMin(w)} min · ${days.length?esc(days.join(', ')):'non planifiée'}</span></button><button class="play" data-act="start" data-id="${esc(w.id)}" aria-label="Démarrer ${esc(w.name)}">${PLAY}</button></div>`}).join('')}</div>`
   :`<div class="group"><div class="empty"><h2>Aucune séance</h2><p>Compose ta première séance avec les exercices de ta bibliothèque.</p><button class="btn" data-act="newwo">Nouvelle séance</button></div></div>`)}
@@ -397,7 +422,7 @@ function vEx(){
   const secs=GROUPS.filter(g=>exFilter==='Tous'||g===exFilter).map(g=>{const l=list.filter(e=>e.group===g).sort((a,b)=>a.name.localeCompare(b.name,'fr'));if(!l.length)return'';
     return `<div class="exsec"><p class="sec">${esc(g)}</p><div class="group">${l.map(e=>{const used=S.workouts.filter(w=>w.items.some(it=>it.ex===e.id)).length,ls=lastFor(e.id);
       return `<button class="cell" data-act="exmenu" data-id="${esc(e.id)}" data-name="${esc(e.name.toLowerCase())}"><span class="sp">${esc(e.name)}<span class="sub">${e.type==='time'?'Durée':'Répétitions'}${used?' · '+used+' séance'+(used>1?'s':''):''}${ls?' · dernier : '+esc(setTxt(ls.sets[ls.sets.length-1],e)):''}</span></span><span class="chev"></span></button>`}).join('')}</div></div>`}).join('');
-  return lt('Exercices',S.exercises.length+' dans ta bibliothèque')+`<label class="search"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/><path d="M20 20l-4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><input id="exq" type="search" placeholder="Rechercher" autocomplete="off" aria-label="Rechercher un exercice"></label>
+  return lt('Exercices',S.exercises.length+' dans ta bibliothèque')+`<div class="seg" role="tablist"><button role="tab" data-act="go2" data-h="seances" class="${cur==='seances'?'on':''}">Mes séances</button><button role="tab" data-act="go2" data-h="exercices" class="${cur==='exercices'?'on':''}">Exercices</button></div><label class="search"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/><path d="M20 20l-4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><input id="exq" type="search" placeholder="Rechercher" autocomplete="off" aria-label="Rechercher un exercice"></label>
   <div class="seg" role="tablist">${['Tous',...GROUPS].map(g=>`<button role="tab" aria-selected="${g===exFilter}" data-act="exf" data-g="${esc(g)}" class="${g===exFilter?'on':''}">${esc(GSHORT[g]||g)}</button>`).join('')}</div>
   ${secs||'<div class="group"><div class="empty"><p>Aucun exercice ici.</p></div></div>'}<p id="exnone" class="sec" hidden>Aucun résultat.</p>`}
 
@@ -416,7 +441,7 @@ function vHist(){
    <p class="sec">Séances par semaine</p><div class="group"><div class="bars">${weeks.map(w=>`<div><span class="num">${w.n||''}</span><i class="${w.n?'':'zero'}" style="height:${w.n/max*80}%"></i>${w.l}</div>`).join('')}</div></div>
    <p class="sec">Progression par exercice</p><div class="group"><label class="cell"><span class="sp">Exercice</span><select class="rin" data-act="progex" aria-label="Exercice">${usedEx.map(e=>`<option value="${esc(e.id)}" ${e.id===progEx?'selected':''}>${esc(e.name)}</option>`).join('')}</select></label>
      <div class="cell" style="display:block;padding-bottom:4px"><span class="sub" id="chartlbl"></span></div><div class="fig"><svg id="chart" role="img" aria-label="Courbe de progression"></svg></div></div>
-  </div><div><p class="sec">Historique</p><div class="group">${H.map(h=>`<details class="cell" style="display:block"><summary><span class="sp">${esc(h.name)}<span class="sub">${esc(fmtDate(h.date))} · ${h.dur} min · ${h.entries.reduce((t,e)=>t+e.sets.length,0)} séries</span></span><span class="chev" style="transform:rotate(135deg)"></span></summary>
+  </div><div><p class="sec">Historique</p><div class="group">${H.map(h=>`<details class="cell" style="display:block"><summary><span class="sp">${esc(h.name)}<span class="sub">${esc(fmtDate(h.date))} · ${h.dur?h.dur+' min':'ajout rapide'} · ${h.entries.reduce((t,e)=>t+e.sets.length,0)} séries</span></span><span class="chev" style="transform:rotate(135deg)"></span></summary>
     <div style="padding-top:8px">${h.entries.map(e=>{const ex=exById(e.ex);return `<div class="prow"><span>${esc(ex?ex.name:'Exercice supprimé')}</span><b class="num" style="text-align:right">${esc(e.sets.map(s=>setTxt(s,ex)).join(' · '))}</b></div>`}).join('')}
     <button class="lnk d" data-act="delh" data-id="${esc(h.id)}" style="padding-left:0">Supprimer cette séance</button></div></details>`).join('')}</div>${dataSec()}</div></div>`}
 
@@ -439,21 +464,146 @@ function drawChart(){const s=$('#chart');if(!s)return;const r=series();if(!r||!r
   if(W>380||pts.length<6)g+=`<text x="${x(0)}" y="${H-5}" font-size="12" style="fill:var(--mute)" text-anchor="${pts.length===1?'middle':'start'}">${esc(fmtDate(first.d))}</text>`+(pts.length>1?`<text x="${x(pts.length-1)}" y="${H-5}" font-size="12" style="fill:var(--mute)" text-anchor="end">${esc(fmtDate(lastP.d))}</text>`:'');
   s.innerHTML=g}
 
-const VIEWS={aujourdhui:['Aujourd’hui',vToday],objectifs:['Objectifs',vGoals,'newgoal'],planning:['Planning',vPlan],seances:['Séances',vWorkouts,'newwo'],exercices:['Exercices',vEx,'newex'],historique:['Progrès',vHist]};
+/* ---------- défis entre amis ---------- */
+const FB_CONFIG=null; // ← remplacé par la configuration Firebase de l'app
+const CH_TYPES={total:'Le plus sur la période',weekly:'Objectif par semaine',max:'Max en une série'};
+const CH_SHORT={total:'Total',weekly:'Hebdo',max:'Max série'};
+const CH_HELP={total:'Gagne celui qui cumule le plus de répétitions sur toute la période, toutes séances confondues.',weekly:'Chaque semaine, il faut atteindre l’objectif. Gagne celui qui valide le plus de semaines (puis le plus gros total).',max:'Gagne celui qui fait le plus de répétitions d’affilée, en une seule série, pendant la période.'};
+const PAL=['#ff6b5b','#5e5ce6','#30b0c7','#34c759','#ff9f0a','#bf5af2','#ff375f','#0a84ff'];
+let fbP=null,chUnsub=null,chLoadT=null,cdraft=null;const chRanks={};
+function fb(){if(!FB_CONFIG)return Promise.reject(new Error('noconfig'));if(fbP)return fbP;
+  const load=src=>new Promise((ok,ko)=>{const s=document.createElement('script');s.src=src;s.onload=ok;s.onerror=()=>ko(new Error('net'));document.head.appendChild(s)});
+  const V='https://www.gstatic.com/firebasejs/10.12.2/';
+  fbP=(window.firebase?Promise.resolve():load(V+'firebase-app-compat.js').then(()=>Promise.all([load(V+'firebase-auth-compat.js'),load(V+'firebase-firestore-compat.js')])))
+    .then(async()=>{if(!firebase.apps.length)firebase.initializeApp(FB_CONFIG);const auth=firebase.auth();
+      let u=await new Promise(r=>{const off=auth.onAuthStateChanged(x=>{off();r(x)})});
+      if(!u){await auth.signInAnonymously();u=auth.currentUser}return{uid:u.uid,fs:firebase.firestore()}})
+    .catch(e=>{fbP=null;throw e});return fbP}
+const chCode=()=>{const A='ABCDEFGHJKMNPQRSTUVWXYZ23456789';let s='';for(let i=0;i<6;i++)s+=A[Math.floor(Math.random()*A.length)];return s};
+const normName=s=>String(s||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^a-z0-9]+/g,' ').trim();
+const chById=code=>S.challenges.find(c=>c.code===code);
+const chUnit=c=>c.exType==='time'?' s':'';
+const ini=n=>String(n||'?').trim().slice(0,1).toUpperCase()||'?';
+const colOf=s=>{let h=0;for(const ch of String(s))h=(h*31+ch.charCodeAt(0))|0;return PAL[Math.abs(h)%PAL.length]};
+function chStatus(c){const t=dk(new Date());if(t<c.start)return{k:'soon',txt:'Commence le '+fmtDate(c.start)};if(t>c.end)return{k:'end',txt:'Terminé le '+fmtDate(c.end)};
+  const n=Math.round((pd(c.end)-pd(t))/864e5);return{k:'live',txt:n?'Encore '+(n+1)+' jours':'Dernier jour'}}
+function chScore(c){const sets=[];S.history.forEach(h=>{if(h.date<c.start||h.date>c.end)return;h.entries.forEach(e=>{if(e.ex===c.exId)e.sets.forEach(s=>sets.push({d:h.date,r:+s.reps||0}))})});
+  const best=Math.max(0,...sets.map(s=>s.r)),total=sets.reduce((t,s)=>t+s.r,0),weeks=[];
+  if(c.type==='weekly')for(let i=0;i<c.weeks;i++){const a=dk(addD(pd(c.start),7*i)),b=dk(addD(pd(c.start),7*i+6));weeks.push(sets.filter(s=>s.d>=a&&s.d<=b).reduce((t,s)=>t+s.r,0))}
+  return{best,total,weeks,ok:weeks.filter(w=>w>=c.target).length}}
+const chRank=(c,l)=>l.slice().sort((a,b)=>c.type==='max'?(+b.best||0)-(+a.best||0):c.type==='total'?(+b.total||0)-(+a.total||0):((+b.ok||0)-(+a.ok||0))||((+b.total||0)-(+a.total||0)));
+const chVal=(c,p)=>c.type==='max'?(+p.best||0)+chUnit(c):c.type==='total'?(+p.total||0)+chUnit(c):(+p.ok||0)+'/'+c.weeks+' sem.';
+const chSub=c=>c.type==='weekly'?`${c.target}${chUnit(c)||''} ${esc(c.exName)} / semaine · ${c.weeks} semaines`:c.type==='max'?`Max ${esc(c.exName)} d’affilée`:`Le plus de ${esc(c.exName)}`;
+async function chPush(c,force){const sc=chScore(c),sig=JSON.stringify(sc)+(S.pseudo||'');if(!force&&c.pushed===sig)return;
+  try{const {uid,fs}=await fb();await fs.collection('challenges').doc(c.code).collection('players').doc(uid).set({name:String(S.pseudo||'Moi').slice(0,24),best:sc.best,total:sc.total,weeks:sc.weeks,ok:sc.ok,updatedAt:Date.now()});c.pushed=sig;save()}catch(e){}}
+function chSyncAll(){if(FB_CONFIG)S.challenges.forEach(c=>chPush(c))}
+function chClean(m){if(!m||!CH_TYPES[m.type])return null;const D=/^\d{4}-\d{2}-\d{2}$/;if(!D.test(m.start)||!D.test(m.end))return null;
+  return{name:String(m.name||'Défi').slice(0,60),type:m.type,exName:String(m.exName||'Exercice').slice(0,60),exGroup:GROUPS.includes(m.exGroup)?m.exGroup:GROUPS[3],exType:m.exType==='time'?'time':'reps',
+    start:m.start,end:m.end,target:Math.max(1,Math.min(100000,+m.target||1)),weeks:Math.max(1,Math.min(52,+m.weeks||1)),ownerName:String(m.ownerName||'').slice(0,24)}}
+
+function vDefis(){
+  if(!FB_CONFIG)return lt('Défis','')+`<div class="group"><div class="empty"><div class="trophy">${TROPHY}</div><h2>Défis entre amis</h2><p>${window.claude?'Les défis fonctionnent dans la version installée de Cadence (celle hébergée sur GitHub Pages).':'La base partagée n’est pas encore connectée à l’app. Une fois Firebase configuré, tu pourras créer des défis et inviter tes amis.'}</p></div></div>`;
+  const groups={live:[],soon:[],end:[]};S.challenges.forEach(c=>groups[chStatus(c).k].push(c));
+  const cell=c=>{const st=chStatus(c),r=chRanks[c.code];return `<button class="cell" data-act="chopen" data-id="${esc(c.code)}"><span class="trophy sm ${st.k}">${TROPHY}</span><span class="sp">${esc(c.name)}<span class="sub">${chSub(c)} · ${esc(st.txt)}</span></span>${r?`<span class="val num">${r.rank}<sup>${r.rank===1?'er':'e'}</sup>/${r.n}</span>`:''}<span class="chev"></span></button>`};
+  const sec=(t,l)=>l.length?`<p class="sec">${t}</p><div class="group">${l.map(cell).join('')}</div>`:'';
+  return lt('Défis',S.pseudo?'Tu joues sous le pseudo « '+esc(S.pseudo)+' »':'Lance un défi et invite tes amis')+
+    `<div class="row" style="flex-wrap:nowrap"><button class="btn sp" data-act="newch">Créer un défi</button><button class="btn t sp" data-act="chcode">Rejoindre</button></div>`+
+    (S.challenges.length?sec('En cours',groups.live)+sec('À venir',groups.soon)+sec('Terminés',groups.end):
+    `<div class="group" style="margin-top:16px"><div class="empty"><div class="trophy">${TROPHY}</div><h2>Aucun défi pour l’instant</h2><p>Crée un défi (par exemple 200 pompes par semaine pendant 4 semaines), envoie le lien à tes amis et suivez le podium en direct.</p></div></div>`)}
+
+function pseudoCell(){return S.pseudo?'':`<p class="sec">Ton pseudo, visible par tes amis</p><div class="group"><label class="cell"><input class="full" id="pseudo" maxlength="24" placeholder="Ex. Marco" autocomplete="nickname" aria-label="Pseudo"></label></div>`}
+function readPseudo(){const i=$('#pseudo');if(i){const v=i.value.trim().slice(0,24);if(!v){toast('Choisis un pseudo');return false}S.pseudo=v}return true}
+function newCh(){const ex=exById('pompes')?'pompes':(S.exercises[0]||{}).id;cdraft={name:'',type:'weekly',ex,start:dk(new Date()),end:dk(addD(new Date(),30)),target:200,weeks:4};drawCh()}
+function drawCh(){const d=cdraft,st=box.scrollTop,ex=exById(d.ex),u=ex&&ex.type==='time'?'secondes':'reps';
+  const opts=S.exercises.slice().sort((a,b)=>a.name.localeCompare(b.name,'fr')).map(e=>`<option value="${esc(e.id)}" ${e.id===d.ex?'selected':''}>${esc(e.name)}</option>`).join('');
+  const end=d.type==='weekly'?dk(addD(pd(d.start),7*d.weeks-1)):d.end;
+  openSheet(head('Nouveau défi','chcreate','Créer')+`
+  <div class="seg" role="tablist">${Object.keys(CH_TYPES).map(k=>`<button role="tab" aria-selected="${k===d.type}" class="${k===d.type?'on':''}" data-act="cdtype" data-t="${k}">${CH_SHORT[k]}</button>`).join('')}</div>
+  <p class="sec" style="margin-top:0"><b style="color:var(--ink)">${CH_TYPES[d.type]}</b> · ${CH_HELP[d.type]}</p>
+  <div class="group"><label class="cell"><input class="full" data-c="name" maxlength="60" value="${esc(d.name)}" placeholder="Nom du défi, ex. Novembre des pompes" aria-label="Nom du défi"></label>
+  <label class="cell"><span class="sp">Exercice</span><select class="rin" data-c="ex">${opts}</select></label></div>
+  <p class="sec">${d.type==='weekly'?'Objectif':'Période'}</p><div class="group">
+  ${d.type==='weekly'?`<label class="cell"><span class="sp">Objectif par semaine (${u})</span><input class="rin num" type="number" inputmode="numeric" min="1" data-c="target" value="${d.target}"></label>
+    <label class="cell"><span class="sp">Nombre de semaines</span><input class="rin num" type="number" inputmode="numeric" min="1" max="52" data-c="weeks" value="${d.weeks}"></label>`:''}
+  <label class="cell"><span class="sp">Début</span><input class="rin" type="date" data-c="start" value="${esc(d.start)}"></label>
+  ${d.type==='weekly'?`<div class="cell"><span class="sp">Fin</span><span class="val" id="chend">${esc(fmtLong(end))}</span></div>`:`<label class="cell"><span class="sp">Fin</span><input class="rin" type="date" data-c="end" value="${esc(d.end)}" min="${esc(d.start)}"></label>`}</div>
+  ${pseudoCell()}<p class="sec">Tes séances et ajouts rapides sur cet exercice, pendant la période, comptent automatiquement.</p>`);box.scrollTop=st}
+async function chCreate(b){const d=cdraft,ex=exById(d.ex);if(!ex){toast('Choisis un exercice');return}if(!readPseudo())return;
+  const end=d.type==='weekly'?dk(addD(pd(d.start),7*Math.max(1,d.weeks|0)-1)):d.end;if(!d.start||!end||end<d.start){toast('Vérifie les dates');return}
+  const meta={name:(d.name.trim()||('Défi '+ex.name.toLowerCase())).slice(0,60),type:d.type,exName:ex.name,exGroup:ex.group,exType:ex.type,start:d.start,end,target:Math.max(1,d.target|0),weeks:Math.max(1,Math.min(52,d.weeks|0)),ownerName:S.pseudo,createdAt:Date.now()};
+  b.disabled=true;b.textContent='…';
+  try{const {uid,fs}=await fb();const code=chCode();await fs.collection('challenges').doc(code).set({...meta,owner:uid});
+    const c={...meta,code,exId:ex.id,owner:uid};S.challenges.push(c);save();closeSheet();if(cur!=='defis')location.hash='defis';else render();await chPush(c,true);chOpen(code);toast('Défi créé : invite tes amis !')}
+  catch(e){b.disabled=false;b.textContent='Créer';toast('Pas de connexion à la base. Réessaie.')}}
+function chCodeSheet(){openSheet(head('Rejoindre un défi','chgo','Suivant')+`<p class="sec" style="margin-top:4px">Le code à 6 caractères envoyé par ton ami</p><div class="group"><label class="cell"><input class="full num" id="chc" maxlength="6" autocapitalize="characters" autocomplete="off" placeholder="Ex. K7M2QA" style="font-size:24px;letter-spacing:.2em;text-transform:uppercase" aria-label="Code du défi"></label></div>`);setTimeout(()=>{const i=$('#chc');i&&i.focus()},350)}
+async function chJoinPrompt(code){code=String(code||'').toUpperCase().replace(/[^A-Z0-9]/g,'').slice(0,6);if(code.length!==6){toast('Code invalide');return}
+  if(!FB_CONFIG){toast('Les défis ne sont pas encore activés dans cette app');return}
+  if(chById(code)){chOpen(code);return}
+  openSheet(`<div class="grab"></div><div class="empty"><p>Recherche du défi ${esc(code)}…</p></div>`);
+  try{const {fs}=await fb();const snap=await fs.collection('challenges').doc(code).get();const m=snap.exists?chClean(snap.data()):null;
+    if(!m){closeSheet();toast('Défi introuvable');return}
+    window.__join={code,m};
+    openSheet(head('Invitation','chjoin','Rejoindre')+`<div class="group"><div class="empty" style="padding:22px 16px"><div class="trophy">${TROPHY}</div><h2>${esc(m.name)}</h2><p>${m.ownerName?esc(m.ownerName)+' t’invite · ':''}${chSub(m)}<br>${esc(fmtDate(m.start))} → ${esc(fmtDate(m.end))}</p></div></div>
+      <p class="sec">${CH_HELP[m.type]}</p>${pseudoCell()}<button class="btn w" data-act="chjoin" style="margin-top:16px">Rejoindre le défi</button>`)}
+  catch(e){closeSheet();toast('Pas de connexion à la base. Réessaie.')}}
+function chJoin(){const j=window.__join;if(!j||!readPseudo())return;const m=j.m;
+  let ex=S.exercises.find(e=>normName(e.name)===normName(m.exName));
+  if(!ex){ex=E('x'+nid(),m.exName,m.exGroup,m.exType);S.exercises.push(ex)}
+  const c={...m,code:j.code,exId:ex.id};S.challenges.push(c);save();window.__join=null;closeSheet();if(cur!=='defis')location.hash='defis';else render();
+  chPush(c,true).then(()=>chOpen(j.code));toast('Tu as rejoint « '+m.name+' »')}
+function chOpen(code){const c=chById(code);if(!c)return;const sc=chScore(c),u=chUnit(c),st=chStatus(c),today=dk(new Date());
+  const mine=c.type==='weekly'?`<div class="wk">${sc.weeks.map((w,i)=>{const a=dk(addD(pd(c.start),7*i)),b=dk(addD(pd(c.start),7*i+6)),now=today>=a&&today<=b,ok=w>=c.target;
+      return `<div class="${ok?'ok':''} ${now?'now':''}"><span class="sub">S${i+1}</span><b class="num">${w}</b><i style="width:${Math.min(100,w/c.target*100)}%"></i></div>`}).join('')}</div><span class="sub" style="margin-top:8px">${sc.ok} semaine${sc.ok>1?'s':''} validée${sc.ok>1?'s':''} · objectif ${c.target}${u} par semaine</span>`
+    :`<div class="rnd" style="font-size:44px;font-weight:700;color:var(--tint);line-height:1.1">${c.type==='max'?sc.best:sc.total}${u}</div><span class="sub">${c.type==='max'?'Ton meilleur résultat d’affilée':'Ton total sur la période'}</span>`;
+  openSheet(`<div class="grab"></div><div class="sh"><button class="lnk" data-act="close">Fermer</button><b>${esc(c.name)}</b><button class="lnk b" data-act="chinvite" data-id="${esc(c.code)}">Inviter</button></div>
+  <div class="group"><div id="podium"><div class="empty"><p>Chargement du classement…</p></div></div></div>
+  <p class="sec">Ma progression · ${esc(st.txt)}</p><div class="group"><div class="cell" style="display:block;padding:14px 16px">${mine}</div>
+    ${st.k!=='soon'?`<div class="cell" style="display:grid;grid-template-columns:${c.type==='max'?'1fr 1fr':'1fr'};gap:10px">${c.type==='max'?`<button class="btn" data-act="chmax" data-id="${esc(c.code)}">${PLAY}Faire mon max</button>`:''}<button class="btn ${c.type==='max'?'t':''}" data-act="chadd" data-id="${esc(c.code)}">${c.type==='max'?'Saisir un résultat':PLUS.replace(/26/g,'20')+'Ajouter des '+(c.exType==='time'?'secondes':'reps')}</button></div>`:''}</div>
+  <p class="sec">Infos</p><div class="group"><div class="cell"><span class="sp">Défi</span><span class="val">${esc(CH_TYPES[c.type])}</span></div><div class="cell"><span class="sp">Exercice</span><span class="val">${esc(c.exName)}</span></div>
+    <div class="cell"><span class="sp">Période</span><span class="val">${esc(fmtDate(c.start))} → ${esc(fmtDate(c.end))}</span></div>
+    <button class="cell" data-act="chinvite" data-id="${esc(c.code)}"><span class="sp">Code d’invitation</span><b class="num" style="letter-spacing:.15em;color:var(--tint)">${esc(c.code)}</b></button>
+    <button class="cell" data-act="chleave" data-id="${esc(c.code)}" style="color:var(--danger);justify-content:center">Quitter le défi</button></div>`);
+  if(chUnsub){chUnsub();chUnsub=null}
+  clearTimeout(chLoadT);chLoadT=setTimeout(()=>{const p=$('#podium');if(p&&p.dataset.ok!=='1')p.innerHTML='<div class="empty"><p>Le classement ne répond pas pour l’instant. Vérifie ta connexion.</p></div>'},10000);
+  chPush(c);
+  fb().then(({uid,fs})=>{if(!$('#podium'))return;chUnsub=fs.collection('challenges').doc(code).collection('players').onSnapshot(qs=>{clearTimeout(chLoadT);drawPodium(c,qs.docs.map(d=>({id:d.id,...d.data()})),uid)},()=>{clearTimeout(chLoadT);const p=$('#podium');if(p)p.innerHTML='<div class="empty"><p>Classement indisponible.</p></div>'})})
+    .catch(()=>{clearTimeout(chLoadT);const p=$('#podium');if(p)p.innerHTML='<div class="empty"><p>Pas de connexion : classement indisponible hors ligne.</p></div>'})}
+function drawPodium(c,list,uid){const p=$('#podium');if(!p)return;p.dataset.ok='1';
+  const r=chRank(c,list.map(x=>({...x,name:String(x.name||'?').slice(0,24)})));const me=r.findIndex(x=>x.id===uid);chRanks[c.code]={rank:me+1,n:r.length};
+  const col=(i)=>{const x=r[i];if(!x)return '<div class="pcol"></div>';const you=x.id===uid;
+    return `<div class="pcol p${i+1}">${i===0?CROWN:''}<div class="av" style="background:${colOf(x.id)}">${esc(ini(x.name))}</div><b class="pn">${esc(x.name)}${you?' (toi)':''}</b><span class="ps num">${esc(chVal(c,x))}</span><div class="pb">${i+1}</div></div>`};
+  p.innerHTML=`<div class="podium">${col(1)}${col(0)}${col(2)}</div>`+
+   (r.length>3?r.slice(3).map((x,i)=>`<div class="cell"><span class="num" style="width:22px;color:var(--mute);font-weight:600">${i+4}</span><span class="av sm" style="background:${colOf(x.id)}">${esc(ini(x.name))}</span><span class="sp">${esc(x.name)}${x.id===uid?' <b style="color:var(--tint)">(toi)</b>':''}</span><b class="num">${esc(chVal(c,x))}</b></div>`).join(''):'')+
+   (r.length<2?'<div class="cell" style="display:block"><span class="sub" style="text-align:center">Invite tes amis pour remplir le podium.</span></div>':'')}
+function chAddSheet(code){const c=chById(code);if(!c)return;const u=c.exType==='time'?'secondes':'répétitions',today=dk(new Date());
+  window.__qa=code;openSheet(head(c.type==='max'?'Mon résultat':'Ajout rapide','chsave','Ajouter')+`<p class="sec" style="margin-top:4px">${c.type==='max'?'Combien de '+u+' d’affilée, en une seule série ?':'Combien de '+u+' de '+esc(c.exName)+' as-tu faites ?'}</p>
+  <div class="group"><div class="cell"><div class="qadd"><button data-act="qd" data-d="-5">−5</button><button data-act="qd" data-d="-1">−1</button><input id="qv" class="num" type="number" inputmode="numeric" min="1" value="${c.type==='weekly'?Math.round(c.target/4):20}" aria-label="Nombre"><button data-act="qd" data-d="1">+1</button><button data-act="qd" data-d="5">+5</button></div></div>
+  <label class="cell"><span class="sp">Date</span><input class="rin" id="qdate" type="date" value="${today<c.end?today:c.end}" min="${esc(c.start)}" max="${today<c.end?today:esc(c.end)}"></label></div>
+  <p class="sec">Ça s’ajoute à ton historique et compte pour tous tes défis sur cet exercice.</p>`)}
+function chSaveQuick(){const c=chById(window.__qa);if(!c)return;const n=Math.max(0,Math.round(+$('#qv').value||0)),d=$('#qdate').value;
+  if(!n){toast('Indique un nombre');return}if(!d||d<c.start||d>c.end||d>dk(new Date())){toast('La date doit être dans la période du défi');return}
+  const h={id:'h'+nid(),date:d,ts:Date.now(),workoutId:'ch-'+c.code,name:'Ajout rapide · '+c.exName,dur:0,entries:[{ex:c.exId,sets:[{reps:n,load:0}]}]};
+  S.history.push(h);S.history.sort((a,b)=>b.ts-a.ts);save([d.slice(0,7)]);chSyncAll();toast('+'+n+' '+(c.exType==='time'?'s':'reps'));chOpen(c.code)}
+async function chInvite(code){const c=chById(code);if(!c)return;const url=location.origin+location.pathname+'#defi-'+c.code;
+  const text=`Rejoins mon défi « ${c.name} » sur Cadence ! ${c.type==='weekly'?c.target+' '+c.exName.toLowerCase()+' par semaine pendant '+c.weeks+' semaines':CH_TYPES[c.type]+' · '+c.exName}. Code : ${c.code}`;
+  try{if(navigator.share){await navigator.share({title:'Défi Cadence',text,url});return}}catch(e){if(e&&e.name==='AbortError')return}
+  try{await navigator.clipboard.writeText(text+'\n'+url);toast('Invitation copiée')}catch(e){toast('Code : '+c.code)}}
+
+const VIEWS={aujourdhui:['Aujourd’hui',vToday],objectifs:['Objectifs',vGoals,'newgoal'],defis:['Défis',vDefis,'newch'],planning:['Planning',vPlan],seances:['Séances',vWorkouts,'newwo'],exercices:['Exercices',vEx,'newex'],historique:['Progrès',vHist]};
 let cur='aujourdhui';
 function render(){const [t,f,act]=VIEWS[cur];$('#ntitle').textContent=t;
   $('#nact').innerHTML=act?`<button class="plus" data-act="${act}" aria-label="Ajouter">${PLUS}</button>`:'';
   $('#view').innerHTML=f();
-  document.querySelectorAll('.tabs a').forEach(a=>{const on=a.dataset.tab===cur;a.classList.toggle('on',on);on?a.setAttribute('aria-current','page'):a.removeAttribute('aria-current')});
+  document.querySelectorAll('.tabs a').forEach(a=>{const on=a.dataset.tab===(cur==='exercices'?'seances':cur);a.classList.toggle('on',on);on?a.setAttribute('aria-current','page'):a.removeAttribute('aria-current')});
   const c=$('#chart');chartObs.disconnect();if(c)chartObs.observe(c);onScroll()}
-function route(){const h=location.hash.slice(1);cur=VIEWS[h]?h:'aujourdhui';render();scrollTo(0,0)}
+function route(){const h=location.hash.slice(1);if(/^defi-/i.test(h)){history.replaceState(null,'','#defis');cur='defis';render();chJoinPrompt(h.slice(5));return}cur=VIEWS[h]?h:'aujourdhui';render();scrollTo(0,0)}
 function onScroll(){$('#nav').classList.toggle('sc',scrollY>38)}
 addEventListener('scroll',onScroll,{passive:true});
 
 /* ---------- feuilles ---------- */
 const box=$('#sheetBox');
 function openSheet(html,kind='box'){box.className=kind;box.style.transform='';box.innerHTML=html;$('#sheet').hidden=false;document.body.style.overflow='hidden'}
-function closeSheet(){$('#sheet').hidden=true;box.innerHTML='';draft=null;gdraft=null;AS=[];if($('#run').hidden)document.body.style.overflow=''}
+function closeSheet(){if(chUnsub){chUnsub();chUnsub=null}clearTimeout(chLoadT);$('#sheet').hidden=true;box.innerHTML='';draft=null;gdraft=null;cdraft=null;AS=[];if($('#run').hidden)document.body.style.overflow=''}
 const head=(title,act,label)=>`<div class="grab"></div><div class="sh"><button class="lnk" data-act="close">Annuler</button><b>${esc(title)}</b><button class="lnk b" data-act="${act}">${esc(label)}</button></div>`;
 let AS=[];
 function actionSheet(title,msg,opts){AS=opts;openSheet(`<div class="asg">${title||msg?`<p class="ast">${title?`<b>${esc(title)}</b>`:''}${esc(msg||'')}</p>`:''}${opts.map((o,i)=>`<button class="asb ${o.d?'d':''} ${o.b?'b':''}" data-act="as" data-i="${i}">${esc(o.label)}</button>`).join('')}</div><div class="asg"><button class="asb b" data-act="close">Annuler</button></div>`,'as')}
@@ -509,6 +659,7 @@ function newEx(){openSheet(head('Nouvel exercice','saveex','Ajouter')+`
   <p class="sec">Détails</p><div class="group"><label class="cell"><span class="sp">Groupe</span><select class="rin" id="exg">${GROUPS.map(g=>`<option ${g===exFilter?'selected':''}>${g}</option>`).join('')}</select></label>
   <label class="cell"><span class="sp">Mesure</span><select class="rin" id="ext"><option value="reps">Répétitions</option><option value="time">Durée (secondes)</option></select></label></div>`);setTimeout(()=>{const n=$('#exn');n&&n.focus()},350)}
 box.addEventListener('input',e=>{const t=e.target,gk=t.dataset.g;
+  if(cdraft&&t.dataset.c){const k=t.dataset.c;cdraft[k]=['name','ex','start','end'].includes(k)?t.value:+t.value||0;if(k==='ex')drawCh();else if((k==='weeks'||k==='start')&&cdraft.start){const e=$('#chend');if(e)e.textContent=fmtLong(dk(addD(pd(cdraft.start),7*Math.max(1,cdraft.weeks|0)-1)))}return}
   if(gdraft&&gk){gdraft[gk]=gk==='deload'?t.checked:(gk==='ex'||gk==='end')?t.value:+t.value||0;
     if(gk==='ex')drawGoalEditor();else{const p=$('#gprev');if(p)p.innerHTML=goalPreview()}return}
   const k=t.dataset.k;if(!draft||!k)return;
@@ -553,7 +704,7 @@ function finish(){const entries=R.log.filter(e=>e.sets.length);R.saved=null;R.pr
   const tot=a=>a.reduce((t,s)=>t+(+s.reps||0),0),mx=a=>Math.max(0,...a.map(s=>+s.load||0));
   entries.forEach(e=>{const p=lastFor(e.ex),ex=exById(e.ex);if(p&&ex&&(tot(e.sets)>tot(p.sets)||mx(e.sets)>mx(p.sets)))R.prs.push(ex.name)});
   if(entries.length){const now=new Date();const h={id:'h'+nid(),date:dk(now),ts:Date.now(),workoutId:R.w.id,name:R.w.name,dur:Math.max(1,Math.round(elapsed()/60000)),entries};
-    if(R.goalId)h.goalId=R.goalId;S.history.unshift(h);R.saved=h;save([h.date.slice(0,7)])}
+    if(R.goalId)h.goalId=R.goalId;S.history.unshift(h);R.saved=h;save([h.date.slice(0,7)]);chSyncAll()}
   R.acc=elapsed();R.paused=false;R.frozen=true;R.phase='done';beep('done');vib([80,60,160]);say(R.saved?'Séance terminée. Bien joué !':'Séance arrêtée.');draw()}
 function closeRun(){micStop();cancelAnimationFrame(raf);lockOff();try{speechSynthesis.cancel()}catch(e){}R=null;$('#run').hidden=true;$('#run').innerHTML='';document.body.style.overflow='';render()}
 function togglePause(){if(!R||R.phase==='done'||R.phase==='intro')return;const t=nowT();
@@ -674,7 +825,7 @@ function importFile(file){const r=new FileReader();r.onload=()=>{let d=null;try{
   if(!d||!Array.isArray(d.exercises)){toast('Ce fichier n’est pas une sauvegarde Cadence');return}
   const n=(d.history||[]).length;
   actionSheet('Restaurer cette sauvegarde ?',`${n} séance${n>1?'s':''} et ${(d.goals||[]).length} objectif(s). Les données actuelles de cet appareil seront remplacées.`,[{label:'Restaurer',d:1,fn:()=>{
-    S={exercises:d.exercises,workouts:d.workouts||[],plan:d.plan||{},goals:d.goals||[],history:d.history||[]};norm();save([...new Set(S.history.map(h=>h.date.slice(0,7)))]);render();toast('Sauvegarde restaurée')}}])};r.readAsText(file)}
+    S={exercises:d.exercises,workouts:d.workouts||[],plan:d.plan||{},goals:d.goals||[],challenges:d.challenges||[],pseudo:d.pseudo||'',history:d.history||[]};norm();chSyncAll();save([...new Set(S.history.map(h=>h.date.slice(0,7)))]);render();toast('Sauvegarde restaurée')}}])};r.readAsText(file)}
 async function shareApp(){const url=location.href.split('#')[0];
   try{if(navigator.share){await navigator.share({title:'Cadence',text:'Mon app pour planifier et suivre mes workouts à la maison',url});return}}catch(e){if(e&&e.name==='AbortError')return}
   try{await navigator.clipboard.writeText(url);toast('Lien copié')}catch(e){toast(url)}}
@@ -724,6 +875,20 @@ document.addEventListener('click',e=>{const b=e.target.closest('[data-act]');if(
     if(!R.paused)togglePause();
     actionSheet('Arrêter la séance ?','Tu peux garder les séries déjà validées.',[{label:'Terminer et enregistrer',b:1,fn:()=>finish()},{label:'Abandonner sans enregistrer',d:1,fn:()=>closeRun()}])}
   else if(a==='closerun')closeRun();
+  else if(a==='go2')location.hash=b.dataset.h;
+  else if(a==='newch'){if(!FB_CONFIG){toast('Les défis ne sont pas encore activés');return}if(!S.exercises.length){toast('Ajoute d’abord un exercice');return}newCh()}
+  else if(a==='cdtype'){cdraft.type=b.dataset.t;drawCh()}
+  else if(a==='chcreate')chCreate(b);
+  else if(a==='chcode'){if(!FB_CONFIG){toast('Les défis ne sont pas encore activés');return}chCodeSheet()}
+  else if(a==='chgo'){const v=$('#chc');chJoinPrompt(v?v.value:'')}
+  else if(a==='chjoin')chJoin();
+  else if(a==='chopen')chOpen(id);
+  else if(a==='chinvite')chInvite(id);
+  else if(a==='chadd')chAddSheet(id);
+  else if(a==='chsave')chSaveQuick();
+  else if(a==='qd'){const i=$('#qv');i.value=Math.max(0,(+i.value||0)+ +b.dataset.d)}
+  else if(a==='chmax'){const c=chById(id);if(!c)return;closeSheet();const sc=chScore(c);startW({id:'ch-'+c.code,name:'Défi · '+c.name,items:[I(c.exId,1,Math.max(1,sc.best+1||10),0,0)]},null)}
+  else if(a==='chleave'){const c=chById(id);if(!c)return;actionSheet('Quitter « '+c.name+' » ?','Tu disparais du classement. Ton historique est conservé.',[{label:'Quitter le défi',d:1,fn:()=>{S.challenges=S.challenges.filter(x=>x.code!==c.code);save();render();fb().then(({uid,fs})=>fs.collection('challenges').doc(c.code).collection('players').doc(uid).delete()).catch(()=>{})}}])}
   else if(a==='export')exportData();
   else if(a==='shareapp')shareApp();
 });

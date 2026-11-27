@@ -1,5 +1,5 @@
 // Cadence : fonctionne hors ligne et récupère toujours la dernière version quand internet est là.
-const CACHE = 'cadence-v1';
+const CACHE = 'cadence-v2';
 const FILES = ['./', './index.html', './manifest.webmanifest', './icon-192.png', './icon-512.png', './apple-touch-icon.png'];
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(FILES)));
