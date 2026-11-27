@@ -174,7 +174,7 @@ details[open] .chev{transform:rotate(135deg)}
 .splits{display:grid;gap:7px}.split{display:grid;grid-template-columns:62px minmax(0,1fr) 62px;align-items:center;gap:8px;font-size:15px;text-align:left}.split .bar{height:12px;border-radius:6px;background:rgba(127,127,127,.18);overflow:hidden}.split i{display:block;height:100%;background:#ff4f3f;border-radius:6px}.split i.best{background:#30d158}.split b{text-align:right}
 .elev svg{width:100%;height:90px;display:block}.prs{margin-top:12px;text-align:left}.rdet{padding-bottom:8px}
 .feat.run{background:linear-gradient(140deg,#ff9f0a 0%,#ff5e3a 50%,#d1173a 100%)}
-.chips{display:flex;flex-wrap:wrap;gap:8px}.chips button{min-height:36px;padding:0 14px;border-radius:99px;border:1.5px solid var(--sep);background:transparent;font-size:14px;font-weight:500;color:var(--ink)}.chips button.on{background:var(--tint);border-color:var(--tint);color:#fff;font-weight:700}.toast{position:fixed;top:calc(10px + env(safe-area-inset-top));left:50%;transform:translateX(-50%);background:var(--bar);-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px);color:var(--ink);padding:11px 20px;border-radius:99px;box-shadow:0 10px 30px rgba(0,0,0,.18);z-index:60;font-weight:600;font-size:15px;animation:drop .35s cubic-bezier(.2,.9,.25,1);white-space:nowrap}
+.chips{display:flex;flex-wrap:wrap;gap:8px}.chips button{min-height:36px;padding:0 14px;border-radius:99px;border:1.5px solid var(--sep);background:transparent;font-size:14px;font-weight:500;color:var(--ink)}.chips button.on{background:var(--tint);border-color:var(--tint);color:#fff;font-weight:700}.upd{position:fixed;left:12px;right:12px;bottom:calc(78px + env(safe-area-inset-bottom));z-index:15;max-width:560px;margin:0 auto;display:flex;align-items:center;gap:10px;background:var(--bar);-webkit-backdrop-filter:blur(24px);backdrop-filter:blur(24px);border-radius:18px;padding:12px 12px 12px 16px;box-shadow:0 12px 32px rgba(0,0,0,.22),0 0 0 .5px var(--sep);animation:up .45s cubic-bezier(.2,.9,.25,1)}.upd .x{width:36px;height:36px;flex:none;border:0;border-radius:50%;background:var(--fill);color:var(--mute);font-size:20px;line-height:1}.toast{position:fixed;top:calc(10px + env(safe-area-inset-top));left:50%;transform:translateX(-50%);background:var(--bar);-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px);color:var(--ink);padding:11px 20px;border-radius:99px;box-shadow:0 10px 30px rgba(0,0,0,.18);z-index:60;font-weight:600;font-size:15px;animation:drop .35s cubic-bezier(.2,.9,.25,1);white-space:nowrap}
 /* séance immersive */
 .run{position:fixed;inset:0;z-index:20;background:#000;color:#fff;display:flex;flex-direction:column;padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom);color-scheme:dark}
 .run[hidden]{display:none}
@@ -979,7 +979,7 @@ async function shareApp(){const url=location.href.split('#')[0];
   try{if(navigator.share){await navigator.share({title:'Cadence',text:'Mon app pour planifier et suivre mes workouts à la maison',url});return}}catch(e){if(e&&e.name==='AbortError')return}
   try{await navigator.clipboard.writeText(url);toast('Lien copié')}catch(e){toast(url)}}
 
-/* ---------- actions ---------- */
+/* ---------- mise à jour ---------- */ let VER0=null; async function verHash(){const r=await fetch('index.html?v='+Date.now(),{cache:'no-store'});if(!r.ok)throw new Error('http');const t=await r.text(),h=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(t));return [...new Uint8Array(h)].slice(0,10).map(b=>b.toString(16).padStart(2,'0')).join('')} async function checkUpdate(){if(window.claude||!(location.protocol==='https:'||location.hostname==='localhost')||!window.crypto||!crypto.subtle)return;if(R||RN)return;try{const h=await verHash();if(!VER0){VER0=h;return}if(h!==VER0)showUpdate()}catch(e){}} function showUpdate(){if($('#upd'))return;const d=document.createElement('div');d.id='upd';d.className='upd';d.setAttribute('role','status');d.innerHTML='<span class="sp"><b>Nouvelle version disponible</b><span class="sub">Recharge pour profiter des nouveautés.</span></span><button class="btn" data-act="reload" style="min-height:40px;padding:0 16px">Recharger</button><button class="x" data-act="updx" aria-label="Plus tard">×</button>';document.body.appendChild(d)} /* ---------- actions ---------- */
 document.addEventListener('click',e=>{const b=e.target.closest('[data-act]');if(!b||b.tagName==='SELECT')return;const a=b.dataset.act,id=b.dataset.id;
   if(a==='start')start(id);
   else if(a==='startgoal')startGoal(id);
@@ -1023,7 +1023,7 @@ document.addEventListener('click',e=>{const b=e.target.closest('[data-act]');if(
   else if(a==='quit'){if(!R)return;if(R.phase==='intro'||R.phase==='done'){closeRun();return}
     if(!R.paused)togglePause();
     actionSheet('Arrêter la séance ?','Tu peux garder les séries déjà validées.',[{label:'Terminer et enregistrer',b:1,fn:()=>finish()},{label:'Abandonner sans enregistrer',d:1,fn:()=>closeRun()}])}
-  else if(a==='closerun')closeRun();
+  else if(a==='closerun')closeRun(); else if(a==='reload')location.reload(); else if(a==='updx'){const u=$('#upd');if(u)u.remove()}
   else if(a==='rngo')rnBegin();
   else if(a==='rnpause')rnPause();
   else if(a==='rnstop')rnStopAsk();
@@ -1062,7 +1062,7 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('#sheet').hidden
   else if(R&&$('#sheet').hidden&&e.key===' '&&e.target.tagName!=='INPUT'){e.preventDefault();if(R.phase==='work')validSet();else if(R.phase==='rest')next();else if(R.phase==='intro')begin()}});
 document.addEventListener('visibilitychange',()=>{if(RN&&!document.hidden&&RN.phase==='run')lockOn();if(R&&!document.hidden&&R.phase!=='done'&&R.phase!=='intro')lockOn()});
 addEventListener('hashchange',route);
-route();setSync('local');connect();if(S.challenges.length)setTimeout(chSyncAll,1500);addEventListener('online',chSyncAll);document.addEventListener('visibilitychange',()=>{if(!document.hidden)chSyncAll()});
+route();setSync('local');connect();setTimeout(checkUpdate,2500);setInterval(checkUpdate,18e5);document.addEventListener('visibilitychange',()=>{if(!document.hidden)setTimeout(checkUpdate,800)});if(S.challenges.length)setTimeout(chSyncAll,1500);addEventListener('online',chSyncAll);document.addEventListener('visibilitychange',()=>{if(!document.hidden)chSyncAll()});
 if('serviceWorker' in navigator&&location.protocol==='https:'&&!window.claude){try{navigator.serviceWorker.register('sw.js').catch(()=>{})}catch(e){}}
 try{navigator.storage&&navigator.storage.persist&&navigator.storage.persist().catch(()=>{})}catch(e){}
 }
