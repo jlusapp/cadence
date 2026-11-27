@@ -174,7 +174,7 @@ details[open] .chev{transform:rotate(135deg)}
 .splits{display:grid;gap:7px}.split{display:grid;grid-template-columns:62px minmax(0,1fr) 62px;align-items:center;gap:8px;font-size:15px;text-align:left}.split .bar{height:12px;border-radius:6px;background:rgba(127,127,127,.18);overflow:hidden}.split i{display:block;height:100%;background:#ff4f3f;border-radius:6px}.split i.best{background:#30d158}.split b{text-align:right}
 .elev svg{width:100%;height:90px;display:block}.prs{margin-top:12px;text-align:left}.rdet{padding-bottom:8px}
 .feat.run{background:linear-gradient(140deg,#ff9f0a 0%,#ff5e3a 50%,#d1173a 100%)}
-.toast{position:fixed;top:calc(10px + env(safe-area-inset-top));left:50%;transform:translateX(-50%);background:var(--bar);-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px);color:var(--ink);padding:11px 20px;border-radius:99px;box-shadow:0 10px 30px rgba(0,0,0,.18);z-index:60;font-weight:600;font-size:15px;animation:drop .35s cubic-bezier(.2,.9,.25,1);white-space:nowrap}
+.chips{display:flex;flex-wrap:wrap;gap:8px}.chips button{min-height:36px;padding:0 14px;border-radius:99px;border:1.5px solid var(--sep);background:transparent;font-size:14px;font-weight:500;color:var(--ink)}.chips button.on{background:var(--tint);border-color:var(--tint);color:#fff;font-weight:700}.toast{position:fixed;top:calc(10px + env(safe-area-inset-top));left:50%;transform:translateX(-50%);background:var(--bar);-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px);color:var(--ink);padding:11px 20px;border-radius:99px;box-shadow:0 10px 30px rgba(0,0,0,.18);z-index:60;font-weight:600;font-size:15px;animation:drop .35s cubic-bezier(.2,.9,.25,1);white-space:nowrap}
 /* séance immersive */
 .run{position:fixed;inset:0;z-index:20;background:#000;color:#fff;display:flex;flex-direction:column;padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom);color-scheme:dark}
 .run[hidden]{display:none}
@@ -536,7 +536,7 @@ function vDefis(){
 
 function pseudoCell(){return S.pseudo?'':`<p class="sec">Ton pseudo, visible par tes amis</p><div class="group"><label class="cell"><input class="full" id="pseudo" maxlength="24" placeholder="Ex. Marco" autocomplete="nickname" aria-label="Pseudo"></label></div>`}
 function readPseudo(){const i=$('#pseudo');if(i){const v=i.value.trim().slice(0,24);if(!v){toast('Choisis un pseudo');return false}S.pseudo=v}return true}
-function newCh(){const ex=exById('pompes')?'pompes':(S.exercises[0]||{}).id;cdraft={name:'',sport:'reps',type:'weekly',ex,start:dk(new Date()),end:dk(addD(new Date(),30)),target:200,weeks:4,dist:5};drawCh()}
+function newCh(){const ex=exById('pompes')?'pompes':(S.exercises[0]||{}).id;cdraft={name:'',sport:'reps',type:'weekly',ex,per:'today',start:dk(new Date()),end:dk(addD(new Date(),30)),target:200,weeks:4,dist:5};applyPer(cdraft);drawCh()} const PERS_W=[['today','Dès aujourd’hui'],['week','Cette semaine'],['nweek','Semaine prochaine'],['custom','Autre date']],PERS=[['week','Cette semaine'],['nweek','Semaine prochaine'],['month','Ce mois-ci'],['nmonth','Mois prochain'],['d30','30 jours'],['custom','Personnalisée']]; function applyPer(d){const t=new Date(),m=monday(t),y=t.getFullYear(),mo=t.getMonth();const P={today:[t,t],week:[m,addD(m,6)],nweek:[addD(m,7),addD(m,13)],month:[new Date(y,mo,1),new Date(y,mo+1,0)],nmonth:[new Date(y,mo+1,1),new Date(y,mo+2,0)],d30:[t,addD(t,29)]}[d.per];if(P){d.start=dk(P[0]);d.end=dk(P[1])}if(d.type==='weekly'&&d.start)d.end=dk(addD(pd(d.start),7*Math.max(1,d.weeks|0)-1))} function perTxt(d){if(!d.start||!d.end||d.end<d.start)return 'Choisis des dates valides';const n=Math.round((pd(d.end)-pd(d.start))/864e5)+1;return 'Du '+fmtDate(d.start)+' au '+fmtDate(d.end)+' · '+n+' jour'+(n>1?'s':'')} function perBlock(d){const w=d.type==='weekly',L=w?PERS_W:PERS;return `<div class="cell" style="display:block"><span class="sub" style="margin-bottom:8px">${w?'Départ':'Période'}</span><div class="chips">${L.map(p=>`<button class="${d.per===p[0]?'on':''}" data-act="cdper" data-p="${p[0]}" aria-pressed="${d.per===p[0]}">${p[1]}</button>`).join('')}</div></div>`+(w?`<div class="cell" style="display:block"><span class="sub" style="margin-bottom:8px">Durée</span><div class="chips">${[1,2,4,6,8,12].map(n=>`<button class="${d.weeks===n?'on':''}" data-act="cdweeks" data-n="${n}" aria-pressed="${d.weeks===n}">${n} sem.</button>`).join('')}</div></div>`:'')+(d.per==='custom'?`<label class="cell"><span class="sp">Début</span><input class="rin" type="date" data-c="start" value="${esc(d.start)}"></label>`+(w?'':`<label class="cell"><span class="sp">Fin</span><input class="rin" type="date" data-c="end" value="${esc(d.end)}" min="${esc(d.start)}"></label>`):'')+`<div class="cell"><b id="chend" style="font-weight:600;color:var(--tint)">${esc(perTxt(d))}</b></div>`}
 function drawCh(){const d=cdraft,st=box.scrollTop,ex=exById(d.ex),u=ex&&ex.type==='time'?'secondes':'reps';
   const opts=S.exercises.slice().sort((a,b)=>a.name.localeCompare(b.name,'fr')).map(e=>`<option value="${esc(e.id)}" ${e.id===d.ex?'selected':''}>${esc(e.name)}</option>`).join('');
   const end=d.type==='weekly'?dk(addD(pd(d.start),7*d.weeks-1)):d.end;
@@ -547,11 +547,11 @@ function drawCh(){const d=cdraft,st=box.scrollTop,ex=exById(d.ex),u=ex&&ex.type=
   <p class="sec" style="margin-top:0"><b style="color:var(--ink)">${chTypeName(d)}</b> · ${chHelp(d)}</p>
   <div class="group"><label class="cell"><input class="full" data-c="name" maxlength="60" value="${esc(d.name)}" placeholder="${run?'Nom du défi, ex. Décembre en baskets':'Nom du défi, ex. Novembre des pompes'}" aria-label="Nom du défi"></label>
   ${run?(d.type==='fastest'?`<label class="cell"><span class="sp">Distance</span><select class="rin" data-c="dist">${[1,3,5,10,21.1,42.2].map(v=>`<option value="${v}" ${+d.dist===v?'selected':''}>${kmTxt(v)} km</option>`).join('')}</select></label>`:''):`<label class="cell"><span class="sp">Exercice</span><select class="rin" data-c="ex">${opts}</select></label>`}</div>
-  <p class="sec">${d.type==='weekly'?'Objectif':'Période'}</p><div class="group">
+  ${d.type==='weekly'?'<p class="sec">Objectif</p><div class="group">':''}
   ${d.type==='weekly'?`<label class="cell"><span class="sp">Objectif par semaine (${run?'km':u})</span><input class="rin num" type="${run?'text':'number'}" inputmode="${run?'decimal':'numeric'}" min="1" data-c="target" value="${run?kmTxt(d.target).replace(/,0$/,''):d.target}"></label>
-    <label class="cell"><span class="sp">Nombre de semaines</span><input class="rin num" type="number" inputmode="numeric" min="1" max="52" data-c="weeks" value="${d.weeks}"></label>`:''}
-  <label class="cell"><span class="sp">Début</span><input class="rin" type="date" data-c="start" value="${esc(d.start)}"></label>
-  ${d.type==='weekly'?`<div class="cell"><span class="sp">Fin</span><span class="val" id="chend">${esc(fmtLong(end))}</span></div>`:`<label class="cell"><span class="sp">Fin</span><input class="rin" type="date" data-c="end" value="${esc(d.end)}" min="${esc(d.start)}"></label>`}</div>
+    </div>`:''}
+  <p class="sec">Quand ?</p><div class="group">${perBlock(d)}
+  </div>
   ${pseudoCell()}<p class="sec">${run?'Tes courses GPS (et celles saisies à la main) pendant la période comptent automatiquement.':'Tes séances et ajouts rapides sur cet exercice, pendant la période, comptent automatiquement.'}</p>`);box.scrollTop=st}
 async function chCreate(b){const d=cdraft,run=d.sport==='run',ex=run?{id:'run',name:'Course à pied',group:'Cardio',type:'km'}:exById(d.ex);if(!ex){toast('Choisis un exercice');return}if(!readPseudo())return;
   const end=d.type==='weekly'?dk(addD(pd(d.start),7*Math.max(1,d.weeks|0)-1)):d.end;if(!d.start||!end||end<d.start){toast('Vérifie les dates');return}
@@ -678,7 +678,7 @@ function drawGoalEditor(){const g=gdraft,st=box.scrollTop,ex=exById(g.ex),u=ex&&
   openSheet(head(g._new?'Nouvel objectif':'Objectif','savegoal',g._new?'Créer':'OK')+`
   <div class="group"><label class="cell"><span class="sp">Exercice</span><select class="rin" data-g="ex">${opts}</select></label></div>
   <p class="sec">Je veux pouvoir faire</p>
-  <div class="group">${num('tSets',g.tSets,'Séries')}${num('tReps',g.tReps,u+' par série')}<label class="cell"><span class="sp">Pour le</span><input class="rin" type="date" data-g="end" value="${esc(g.end)}" min="${dk(addD(new Date(),1))}"></label></div>
+  <div class="group">${num('tSets',g.tSets,'Séries')}${num('tReps',g.tReps,u+' par série')}<label class="cell"><span class="sp">Pour le</span><input class="rin" type="date" data-g="end" value="${esc(g.end)}" min="${dk(addD(new Date(),1))}"></label><div class="cell"><div class="chips">${[1,2,3,6].map(m=>{const t=new Date(),v=dk(new Date(t.getFullYear(),t.getMonth()+m,t.getDate()));return `<button class="${g.end===v?'on':''}" data-act="gend" data-m="${m}" aria-pressed="${g.end===v}">Dans ${m} mois</button>`}).join('')}</div></div></div>
   <p class="sec">Aujourd’hui, j’arrive à faire</p>
   <div class="group">${num('curSets',g.curSets,'Séries')}${num('curReps',g.curReps,u+' par série')}</div>
   <p class="sec">Entraînement</p>
@@ -691,7 +691,7 @@ function newEx(){openSheet(head('Nouvel exercice','saveex','Ajouter')+`
   <p class="sec">Détails</p><div class="group"><label class="cell"><span class="sp">Groupe</span><select class="rin" id="exg">${GROUPS.map(g=>`<option ${g===exFilter?'selected':''}>${g}</option>`).join('')}</select></label>
   <label class="cell"><span class="sp">Mesure</span><select class="rin" id="ext"><option value="reps">Répétitions</option><option value="time">Durée (secondes)</option></select></label></div>`);setTimeout(()=>{const n=$('#exn');n&&n.focus()},350)}
 box.addEventListener('input',e=>{const t=e.target,gk=t.dataset.g;
-  if(cdraft&&t.dataset.c){const k=t.dataset.c;cdraft[k]=['name','ex','start','end'].includes(k)?t.value:+String(t.value).replace(',','.')||0;if(k==='ex')drawCh();else if((k==='weeks'||k==='start')&&cdraft.start){const e=$('#chend');if(e)e.textContent=fmtLong(dk(addD(pd(cdraft.start),7*Math.max(1,cdraft.weeks|0)-1)))}return}
+  if(cdraft&&t.dataset.c){const k=t.dataset.c;cdraft[k]=['name','ex','start','end'].includes(k)?t.value:+String(t.value).replace(',','.')||0;if(k==='ex')drawCh();else if(k==='start'||k==='end'){if(cdraft.type==='weekly'&&cdraft.start)cdraft.end=dk(addD(pd(cdraft.start),7*Math.max(1,cdraft.weeks|0)-1));const e=$('#chend');if(e)e.textContent=perTxt(cdraft)}return}
   if(gdraft&&gk){gdraft[gk]=gk==='deload'?t.checked:(gk==='ex'||gk==='end')?t.value:+t.value||0;
     if(gk==='ex')drawGoalEditor();else{const p=$('#gprev');if(p)p.innerHTML=goalPreview()}return}
   const k=t.dataset.k;if(!draft||!k)return;
@@ -1032,7 +1032,7 @@ document.addEventListener('click',e=>{const b=e.target.closest('[data-act]');if(
   else if(a==='cdsport'){cdraft.sport=b.dataset.s;if(cdraft.sport!=='run'&&cdraft.type==='fastest')cdraft.type='weekly';cdraft.target=cdraft.sport==='run'?20:200;drawCh()}
   else if(a==='go2')location.hash=b.dataset.h;
   else if(a==='newch'){if(!FB_CONFIG){toast('Les défis ne sont pas encore activés');return}if(!S.exercises.length){toast('Ajoute d’abord un exercice');return}newCh()}
-  else if(a==='cdtype'){cdraft.type=b.dataset.t;drawCh()}
+  else if(a==='cdtype'){cdraft.type=b.dataset.t;const ks=(cdraft.type==='weekly'?PERS_W:PERS).map(p=>p[0]);if(!ks.includes(cdraft.per))cdraft.per=cdraft.type==='weekly'?'today':'month';applyPer(cdraft);drawCh()} else if(a==='cdper'){cdraft.per=b.dataset.p;applyPer(cdraft);drawCh()} else if(a==='cdweeks'){cdraft.weeks=+b.dataset.n;applyPer(cdraft);drawCh()} else if(a==='gend'){const t=new Date();gdraft.end=dk(new Date(t.getFullYear(),t.getMonth()+ +b.dataset.m,t.getDate()));drawGoalEditor()}
   else if(a==='chcreate')chCreate(b);
   else if(a==='chcode'){if(!FB_CONFIG){toast('Les défis ne sont pas encore activés');return}chCodeSheet()}
   else if(a==='chgo'){const v=$('#chc');chJoinPrompt(v?v.value:'')}
