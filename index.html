@@ -465,7 +465,7 @@ function drawChart(){const s=$('#chart');if(!s)return;const r=series();if(!r||!r
   s.innerHTML=g}
 
 /* ---------- défis entre amis ---------- */
-const FB_CONFIG=null; // ← remplacé par la configuration Firebase de l'app
+const FB_CONFIG={apiKey:"AIzaSyAKbMmWaqDhuwR63UnqW1iQiIXItXRyhRE",authDomain:"cadence-3698c.firebaseapp.com",projectId:"cadence-3698c",storageBucket:"cadence-3698c.firebasestorage.app",messagingSenderId:"1189601091",appId:"1:1189601091:web:b2d970e5b3ebd4e05099f6"}; // ← remplacé par la configuration Firebase de l'app
 const CH_TYPES={total:'Le plus sur la période',weekly:'Objectif par semaine',max:'Max en une série'};
 const CH_SHORT={total:'Total',weekly:'Hebdo',max:'Max série'};
 const CH_HELP={total:'Gagne celui qui cumule le plus de répétitions sur toute la période, toutes séances confondues.',weekly:'Chaque semaine, il faut atteindre l’objectif. Gagne celui qui valide le plus de semaines (puis le plus gros total).',max:'Gagne celui qui fait le plus de répétitions d’affilée, en une seule série, pendant la période.'};
