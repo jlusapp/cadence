@@ -1,0 +1,16 @@
+{
+  "name": "Cadence — workouts maison",
+  "short_name": "Cadence",
+  "description": "Planifie et suis tes workouts à la maison, avec des objectifs progressifs.",
+  "lang": "fr",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f2f2f7",
+  "theme_color": "#e5372a",
+  "icons": [
+    {"src": "icon-192.png", "sizes": "192x192", "type": "image/png"},
+    {"src": "icon-512.png", "sizes": "512x512", "type": "image/png"},
+    {"src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable"}
+  ]
+}
