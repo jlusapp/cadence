@@ -78,13 +78,13 @@ button.cell:active,a.cell:active,.cellbtn:active{background:var(--fill)}
 .wdot{display:block;width:6px;height:6px;border-radius:50%;margin:5px auto 0;border:1.5px solid transparent}
 .wdot.plan{border-color:var(--tint)}.wdot.done{background:var(--tint);border-color:var(--tint)}
 .seg{display:flex;background:var(--fill);border-radius:9px;padding:2px;gap:2px;margin-bottom:12px;overflow-x:auto}
-.seg button{flex:1 0 auto;min-height:34px;border:0;background:transparent;border-radius:7px;font-size:13px;font-weight:500;padding:0 10px}
-.seg button.on{background:var(--cell);box-shadow:0 3px 8px rgba(0,0,0,.12),0 0 0 .5px rgba(0,0,0,.04);font-weight:600}
+.seg button{flex:1 0 auto;min-height:36px;border:0;background:transparent;border-radius:8px;font-size:14px;font-weight:500;padding:0 10px;color:var(--mute)}
+.seg button.on{background:var(--tint);color:#fff;font-weight:700;box-shadow:0 3px 10px -2px rgba(229,55,42,.55)}
 .search{display:flex;align-items:center;gap:6px;background:var(--fill);border-radius:10px;padding:0 10px;min-height:40px;margin-bottom:10px;color:var(--mute)}
 .search input{border:0;background:transparent;outline:none;font-size:17px;min-height:40px;width:100%;color:var(--ink)}
 .rin{border:0;background:transparent;text-align:right;color:var(--mute);font-size:17px;max-width:55%;min-height:30px;padding:0;outline:none}
 .rin:focus{color:var(--tint)}
-select.rin{-webkit-appearance:none;appearance:none;text-align-last:right;padding-right:2px}
+select.rin{-webkit-appearance:none;appearance:none;text-align-last:right;padding-right:18px;color:var(--tint);font-weight:500;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M3 4.5l3 3 3-3' fill='none' stroke='%23999' stroke-width='1.6' stroke-linecap='round'/%3E%3C/svg%3E") no-repeat right center/12px}
 input.full{border:0;background:transparent;width:100%;min-height:30px;font-size:17px;outline:none}
 .cell:focus-within{background:light-dark(#f7f7f9,#232325)}
 .switch{-webkit-appearance:none;appearance:none;width:51px;height:31px;border-radius:99px;background:var(--fill);position:relative;flex:none;transition:background .2s;margin:0;cursor:pointer}
@@ -542,8 +542,8 @@ function drawCh(){const d=cdraft,st=box.scrollTop,ex=exById(d.ex),u=ex&&ex.type=
   const end=d.type==='weekly'?dk(addD(pd(d.start),7*d.weeks-1)):d.end;
   const run=d.sport==='run',keys=run?['total','weekly','max','fastest']:['total','weekly','max'];
   openSheet(head('Nouveau défi','chcreate','Créer')+`
-  <div class="seg" role="tablist" style="margin-bottom:8px"><button role="tab" aria-selected="${!run}" class="${run?'':'on'}" data-act="cdsport" data-s="reps">Renforcement</button><button role="tab" aria-selected="${run}" class="${run?'on':''}" data-act="cdsport" data-s="run">Course à pied</button></div>
-  <div class="seg" role="tablist">${keys.map(k=>`<button role="tab" aria-selected="${k===d.type}" class="${k===d.type?'on':''}" data-act="cdtype" data-t="${k}">${run?CH_SHORT_RUN[k]:CH_SHORT[k]}</button>`).join('')}</div>
+  <p class="sec" style="margin-top:4px">Sport</p><div class="seg" role="tablist" style="margin-bottom:8px"><button role="tab" aria-selected="${!run}" class="${run?'':'on'}" data-act="cdsport" data-s="reps">Renforcement</button><button role="tab" aria-selected="${run}" class="${run?'on':''}" data-act="cdsport" data-s="run">Course à pied</button></div>
+  <p class="sec">Type de défi</p><div class="seg" role="tablist">${keys.map(k=>`<button role="tab" aria-selected="${k===d.type}" class="${k===d.type?'on':''}" data-act="cdtype" data-t="${k}">${run?CH_SHORT_RUN[k]:CH_SHORT[k]}</button>`).join('')}</div>
   <p class="sec" style="margin-top:0"><b style="color:var(--ink)">${chTypeName(d)}</b> · ${chHelp(d)}</p>
   <div class="group"><label class="cell"><input class="full" data-c="name" maxlength="60" value="${esc(d.name)}" placeholder="${run?'Nom du défi, ex. Décembre en baskets':'Nom du défi, ex. Novembre des pompes'}" aria-label="Nom du défi"></label>
   ${run?(d.type==='fastest'?`<label class="cell"><span class="sp">Distance</span><select class="rin" data-c="dist">${[1,3,5,10,21.1,42.2].map(v=>`<option value="${v}" ${+d.dist===v?'selected':''}>${kmTxt(v)} km</option>`).join('')}</select></label>`:''):`<label class="cell"><span class="sp">Exercice</span><select class="rin" data-c="ex">${opts}</select></label>`}</div>
